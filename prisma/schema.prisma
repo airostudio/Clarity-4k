@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("MANAGER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Talent {
+  id            String    @id @default(cuid())
+  name          String
+  stageName     String?
+  email         String    @unique
+  phone         String?
+  dateOfBirth   DateTime?
+  nationality   String?
+  bio           String?
+  avatar        String?
+  status        String    @default("ACTIVE")
+  tier          String    @default("STANDARD")
+  joinedAt      DateTime  @default(now())
+  contractEnd   DateTime?
+  platformLinks String?
+  socialLinks   String?
+  tags          String?
+  agencyFee     Float     @default(20)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  earnings  Earning[]
+  expenses  Expense[]
+  campaigns CampaignTalent[]
+  notes     Note[]
+}
+
+model Earning {
+  id          String   @id @default(cuid())
+  talentId    String
+  talent      Talent   @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  platform    String
+  amount      Float
+  currency    String   @default("USD")
+  month       Int
+  year        Int
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  talentId    String
+  talent      Talent   @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  category    String
+  amount      Float
+  currency    String   @default("USD")
+  date        DateTime
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model Campaign {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  type        String
+  status      String    @default("DRAFT")
+  startDate   DateTime
+  endDate     DateTime?
+  budget      Float?
+  spent       Float     @default(0)
+  goal        String?
+  platform    String?
+  metrics     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  talents CampaignTalent[]
+}
+
+model CampaignTalent {
+  id         String   @id @default(cuid())
+  campaignId String
+  talentId   String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  talent     Talent   @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, talentId])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  talentId  String
+  talent    Talent   @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  content   String
+  author    String
+  createdAt DateTime @default(now())
+}
+
+model AgencySettings {
+  id           String  @id @default(cuid())
+  agencyName   String  @default("Clarity 4K")
+  logoUrl      String?
+  currency     String  @default("USD")
+  defaultFee   Float   @default(20)
+  contactEmail String?
+  contactPhone String?
+  address      String?
+  taxId        String?
+}

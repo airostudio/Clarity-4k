@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    @apply bg-surface text-slate-100 font-sans antialiased;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-surface; }
+  ::-webkit-scrollbar-thumb { @apply bg-surface-muted rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-brand-600; }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface-card border border-surface-border rounded-xl p-5;
+  }
+  .btn-primary {
+    @apply bg-brand-600 hover:bg-brand-500 text-white font-medium px-4 py-2 rounded-lg transition-colors text-sm;
+  }
+  .btn-secondary {
+    @apply bg-surface-muted hover:bg-slate-600 text-slate-200 font-medium px-4 py-2 rounded-lg transition-colors text-sm border border-surface-border;
+  }
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-500 text-white font-medium px-4 py-2 rounded-lg transition-colors text-sm;
+  }
+  .input {
+    @apply bg-surface border border-surface-border rounded-lg px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors w-full;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border;
+  }
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-100 hover:bg-surface-muted transition-all;
+  }
+  .nav-link.active {
+    @apply text-white bg-brand-600/20 border border-brand-600/30;
+  }
+  .page-header {
+    @apply mb-6;
+  }
+  .page-title {
+    @apply text-2xl font-bold text-white;
+  }
+  .page-subtitle {
+    @apply text-sm text-slate-400 mt-1;
+  }
+  .section-title {
+    @apply text-base font-semibold text-white mb-4;
+  }
+  .stat-card {
+    @apply card flex items-start gap-4;
+  }
+  .stat-icon {
+    @apply p-2.5 rounded-lg;
+  }
+  .stat-value {
+    @apply text-2xl font-bold text-white;
+  }
+  .stat-label {
+    @apply text-xs text-slate-400 mt-0.5;
+  }
+  .stat-delta {
+    @apply text-xs mt-1 font-medium;
+  }
+  .table-header {
+    @apply text-xs text-slate-400 uppercase tracking-wider px-4 py-3;
+  }
+  .table-cell {
+    @apply px-4 py-3 text-sm;
+  }
+  .table-row {
+    @apply border-t border-surface-border hover:bg-surface-muted/40 transition-colors;
+  }
+}
