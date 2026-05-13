@@ -1,19 +1,12 @@
 export const dynamic = 'force-dynamic'
 
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server'
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
-  await prisma.user.delete({ where: { id: params.id } })
-  return NextResponse.json({ success: true })
+// Users are managed by OAuth — no local user deletion needed.
+export async function DELETE() {
+  return NextResponse.json({ message: 'Users are managed via OAuth provider.' })
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const { role } = await req.json()
-  const user = await prisma.user.update({
-    where: { id: params.id },
-    data: { role },
-    select: { id: true, email: true, name: true, role: true },
-  })
-  return NextResponse.json(user)
+export async function PUT() {
+  return NextResponse.json({ message: 'Users are managed via OAuth provider.' })
 }

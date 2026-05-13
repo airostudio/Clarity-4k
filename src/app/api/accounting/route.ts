@@ -1,78 +1,81 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { supabase, toCamel } from '@/lib/supabase'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const year  = parseInt(searchParams.get('year')  ?? String(new Date().getFullYear()))
+  const year  = parseInt(searchParams.get('year') ?? String(new Date().getFullYear()))
   const month = searchParams.get('month') ?? ''
 
-  const earningWhere: any  = { year }
-  const expenseWhere: any  = {
-    date: {
-      gte: new Date(`${year}-01-01`),
-      lte: new Date(`${year}-12-31`),
-    },
-  }
+  const yearStart = `${year}-01-01`
+  const yearEnd   = `${year}-12-31`
+
+  let earningsQuery = supabase
+    .from('earnings')
+    .select('*, talent:talent(id, name, stage_name, agency_fee, tier)')
+    .eq('year', year)
+    .order('year',  { ascending: false })
+    .order('month', { ascending: false })
+
+  let expensesQuery = supabase
+    .from('expenses')
+    .select('*, talent:talent(id, name, stage_name)')
+    .gte('date', yearStart)
+    .lte('date', yearEnd)
+    .order('date', { ascending: false })
+
   if (month) {
-    earningWhere.month = parseInt(month)
-    const m = parseInt(month)
-    expenseWhere.date = {
-      gte: new Date(year, m - 1, 1),
-      lte: new Date(year, m, 0),
-    }
+    earningsQuery = earningsQuery.eq('month', parseInt(month))
+    const m  = parseInt(month)
+    const mStart = `${year}-${String(m).padStart(2, '0')}-01`
+    const mEnd   = new Date(year, m, 0).toISOString().split('T')[0]
+    expensesQuery = expensesQuery.gte('date', mStart).lte('date', mEnd)
   }
 
-  const [earnings, expenses, talents] = await Promise.all([
-    prisma.earning.findMany({
-      where: earningWhere,
-      include: { talent: { select: { id: true, name: true, stageName: true, agencyFee: true, tier: true } } },
-      orderBy: [{ year: 'desc' }, { month: 'desc' }],
-    }),
-    prisma.expense.findMany({
-      where: expenseWhere,
-      include: { talent: { select: { id: true, name: true, stageName: true } } },
-      orderBy: { date: 'desc' },
-    }),
-    prisma.talent.findMany({
-      select: {
-        id: true, name: true, stageName: true, tier: true, agencyFee: true,
-        earnings: { select: { amount: true }, where: earningWhere },
-        expenses: { select: { amount: true }, where: expenseWhere },
-      },
-      orderBy: { name: 'asc' },
-    }),
+  const [
+    { data: earnings },
+    { data: expenses },
+    { data: talents },
+  ] = await Promise.all([
+    earningsQuery,
+    expensesQuery,
+    supabase.from('talent').select('id, name, stage_name, tier, agency_fee, earnings(amount), expenses(amount)'),
   ])
 
-  const totalRevenue  = earnings.reduce((s, e) => s + e.amount, 0)
-  const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0)
+  const totalRevenue  = (earnings ?? []).reduce((s, e) => s + e.amount, 0)
+  const totalExpenses = (expenses ?? []).reduce((s, e) => s + e.amount, 0)
 
-  const talentSummary = talents.map(t => ({
-    id:            t.id,
-    name:          t.name,
-    stageName:     t.stageName,
-    tier:          t.tier,
-    agencyFee:     t.agencyFee,
-    grossEarnings: t.earnings.reduce((s, e) => s + e.amount, 0),
-    expenses:      t.expenses.reduce((s, e) => s + e.amount, 0),
-    agencyRevenue: t.earnings.reduce((s, e) => s + e.amount, 0) * (t.agencyFee / 100),
-  }))
+  const talentSummary = (talents ?? []).map((t: any) => {
+    const gross   = (t.earnings as any[]).reduce((s: number, e: any) => s + e.amount, 0)
+    const exp     = (t.expenses as any[]).reduce((s: number, e: any) => s + e.amount, 0)
+    const agency  = gross * (t.agency_fee / 100)
+    return {
+      id:            t.id,
+      name:          t.name,
+      stageName:     t.stage_name,
+      tier:          t.tier,
+      agencyFee:     t.agency_fee,
+      grossEarnings: gross,
+      expenses:      exp,
+      agencyRevenue: agency,
+    }
+  })
 
   // Monthly breakdown
   const monthlyMap: Record<number, { earnings: number; expenses: number }> = {}
   for (let i = 1; i <= 12; i++) monthlyMap[i] = { earnings: 0, expenses: 0 }
-  for (const e of earnings)  monthlyMap[e.month].earnings  += e.amount
-  for (const e of expenses) {
+  for (const e of earnings  ?? []) monthlyMap[e.month].earnings  += e.amount
+  for (const e of expenses  ?? []) {
     const m = new Date(e.date).getMonth() + 1
-    monthlyMap[m].expenses += e.amount
+    if (monthlyMap[m]) monthlyMap[m].expenses += e.amount
   }
   const monthly = Object.entries(monthlyMap).map(([m, v]) => ({
-    month: parseInt(m),
-    label: new Date(year, parseInt(m) - 1).toLocaleString('default', { month: 'short' }),
+    month:    parseInt(m),
+    label:    new Date(year, parseInt(m) - 1).toLocaleString('default', { month: 'short' }),
     earnings: v.earnings,
     expenses: v.expenses,
-    net: v.earnings - v.expenses,
+    net:      v.earnings - v.expenses,
   }))
 
   return NextResponse.json({
@@ -84,7 +87,7 @@ export async function GET(req: NextRequest) {
     },
     talentSummary,
     monthly,
-    recentEarnings:  earnings.slice(0, 15),
-    recentExpenses:  expenses.slice(0, 15),
+    recentEarnings: toCamel(earnings?.slice(0, 15) ?? []),
+    recentExpenses: toCamel(expenses?.slice(0, 15) ?? []),
   })
 }

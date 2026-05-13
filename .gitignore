@@ -6,11 +6,5 @@ node_modules
 .next/
 out/
 
-# Prisma
-/generated/prisma
-*.db
-*.db-journal
-
 # Build
 *.tsbuildinfo
-

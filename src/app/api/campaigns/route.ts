@@ -1,39 +1,47 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { supabase, toCamel } from '@/lib/supabase'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const status = searchParams.get('status') ?? ''
 
-  const where: any = {}
-  if (status) where.status = status
+  let query = supabase
+    .from('campaigns')
+    .select('*, talents:campaign_talent(talent:talent(id, name, avatar))')
+    .order('created_at', { ascending: false })
 
-  const campaigns = await prisma.campaign.findMany({
-    where,
-    orderBy: { createdAt: 'desc' },
-    include: {
-      talents: {
-        include: { talent: { select: { id: true, name: true, avatar: true } } },
-      },
-    },
-  })
-  return NextResponse.json(campaigns)
+  if (status) query = query.eq('status', status)
+
+  const { data, error } = await query
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json(toCamel(data ?? []))
 }
 
 export async function POST(req: NextRequest) {
-  const { talentIds, ...data } = await req.json()
-  const campaign = await prisma.campaign.create({
-    data: {
-      ...data,
-      startDate: new Date(data.startDate),
-      endDate:   data.endDate ? new Date(data.endDate) : undefined,
-      talents: talentIds?.length
-        ? { create: talentIds.map((id: string) => ({ talentId: id })) }
-        : undefined,
-    },
-    include: { talents: { include: { talent: true } } },
-  })
-  return NextResponse.json(campaign, { status: 201 })
+  const { talentIds, ...body } = await req.json()
+
+  const row: any = {
+    title:       body.title,
+    description: body.description,
+    type:        body.type,
+    status:      body.status ?? 'DRAFT',
+    start_date:  body.startDate,
+    end_date:    body.endDate   || null,
+    budget:      body.budget    ? parseFloat(body.budget) : null,
+    goal:        body.goal,
+    platform:    body.platform,
+  }
+
+  const { data: campaign, error } = await supabase.from('campaigns').insert(row).select().single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+
+  if (talentIds?.length) {
+    await supabase.from('campaign_talent').insert(
+      talentIds.map((id: string) => ({ campaign_id: campaign.id, talent_id: id }))
+    )
+  }
+
+  return NextResponse.json(toCamel(campaign), { status: 201 })
 }

@@ -1,73 +1,67 @@
 export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { supabase, toCamel } from '@/lib/supabase'
 
 export async function GET() {
   const [
-    totalTalent,
-    activeTalent,
-    activeCampaigns,
-    allEarnings,
-    recentTalent,
-    recentCampaigns,
-    monthlyEarnings,
+    { count: totalTalent },
+    { count: activeTalent },
+    { count: activeCampaigns },
+    { data: allEarnings },
+    { data: recentTalent },
+    { data: recentCampaigns },
   ] = await Promise.all([
-    prisma.talent.count(),
-    prisma.talent.count({ where: { status: 'ACTIVE' } }),
-    prisma.campaign.count({ where: { status: 'ACTIVE' } }),
-    prisma.earning.aggregate({ _sum: { amount: true } }),
-    prisma.talent.findMany({
-      take: 5,
-      orderBy: { joinedAt: 'desc' },
-      select: { id: true, name: true, stageName: true, avatar: true, tier: true, status: true },
-    }),
-    prisma.campaign.findMany({
-      take: 4,
-      orderBy: { createdAt: 'desc' },
-      where: { status: { in: ['ACTIVE', 'DRAFT'] } },
-      select: { id: true, title: true, type: true, status: true, budget: true, spent: true, platform: true },
-    }),
-    prisma.earning.groupBy({
-      by: ['year', 'month'],
-      _sum: { amount: true },
-      orderBy: [{ year: 'asc' }, { month: 'asc' }],
-      take: 6,
-    }),
+    supabase.from('talent').select('*', { count: 'exact', head: true }),
+    supabase.from('talent').select('*', { count: 'exact', head: true }).eq('status', 'ACTIVE'),
+    supabase.from('campaigns').select('*', { count: 'exact', head: true }).eq('status', 'ACTIVE'),
+    supabase.from('earnings').select('amount, month, year, talent_id'),
+    supabase.from('talent').select('id, name, stage_name, avatar, tier, status').order('joined_at', { ascending: false }).limit(5),
+    supabase.from('campaigns').select('id, title, type, status, budget, spent, platform').in('status', ['ACTIVE', 'DRAFT']).order('created_at', { ascending: false }).limit(4),
   ])
 
-  const totalRevenue    = allEarnings._sum.amount ?? 0
-  const agencyRevenue   = totalRevenue * 0.2
-  const avgEarnings     = activeTalent > 0 ? totalRevenue / activeTalent : 0
+  const totalRevenue  = (allEarnings ?? []).reduce((s, e) => s + e.amount, 0)
+  const agencyRevenue = totalRevenue * 0.2
+  const avgEarnings   = (activeTalent ?? 0) > 0 ? totalRevenue / (activeTalent ?? 1) : 0
+
+  // Monthly breakdown (last 6 months)
+  const monthMap: Record<string, number> = {}
+  for (const e of allEarnings ?? []) {
+    const key = `${e.month}/${e.year}`
+    monthMap[key] = (monthMap[key] ?? 0) + e.amount
+  }
+  const monthlyEarnings = Object.entries(monthMap)
+    .slice(-6)
+    .map(([label, revenue]) => ({ label, revenue }))
 
   // Top earners this month
   const now = new Date()
-  const topEarners = await prisma.earning.groupBy({
-    by: ['talentId'],
-    where: { month: now.getMonth() + 1, year: now.getFullYear() },
-    _sum: { amount: true },
-    orderBy: { _sum: { amount: 'desc' } },
-    take: 5,
-  })
-
-  const topEarnerDetails = await Promise.all(
-    topEarners.map(async (e) => {
-      const talent = await prisma.talent.findUnique({
-        where: { id: e.talentId },
-        select: { id: true, name: true, stageName: true, avatar: true, tier: true },
-      })
-      return { ...talent, amount: e._sum.amount ?? 0 }
-    })
+  const thisMonthEarnings = (allEarnings ?? []).filter(
+    e => e.month === now.getMonth() + 1 && e.year === now.getFullYear()
   )
+  const earnerMap: Record<string, number> = {}
+  for (const e of thisMonthEarnings) {
+    earnerMap[e.talent_id] = (earnerMap[e.talent_id] ?? 0) + e.amount
+  }
+  const topTalentIds = Object.entries(earnerMap)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5)
+    .map(([id]) => id)
+
+  const { data: topTalentData } = topTalentIds.length
+    ? await supabase.from('talent').select('id, name, stage_name, avatar, tier').in('id', topTalentIds)
+    : { data: [] }
+
+  const topEarners = topTalentIds.map(id => ({
+    ...topTalentData?.find(t => t.id === id),
+    amount: earnerMap[id],
+  }))
 
   return NextResponse.json({
     kpi: { totalTalent, activeTalent, totalRevenue, agencyRevenue, activeCampaigns, avgEarnings },
-    recentTalent,
-    recentCampaigns,
-    monthlyEarnings: monthlyEarnings.map(m => ({
-      label: `${m.month}/${m.year}`,
-      revenue: m._sum.amount ?? 0,
-    })),
-    topEarners: topEarnerDetails,
+    recentTalent:    toCamel(recentTalent ?? []),
+    recentCampaigns: toCamel(recentCampaigns ?? []),
+    monthlyEarnings,
+    topEarners:      toCamel(topEarners),
   })
 }
