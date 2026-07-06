@@ -45,10 +45,17 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId:     process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      // Without this, signing in with a second provider under the same email
+      // as an existing account (e.g. Google first, then GitHub later) throws
+      // OAuthAccountNotLinked instead of just linking it. Since ALLOWED_EMAILS
+      // is already the real access gate, trusting the email match here is safe
+      // for this small, single-team app.
+      allowDangerousEmailAccountLinking: true,
     }),
     GitHubProvider({
       clientId:     process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
     EmailProvider({
       server: process.env.EMAIL_SERVER,
