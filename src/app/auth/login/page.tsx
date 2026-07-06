@@ -1,9 +1,9 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
-import { Zap, ShieldAlert } from 'lucide-react'
+import { Zap, ShieldAlert, Mail, MailCheck } from 'lucide-react'
 
 function GoogleIcon() {
   return (
@@ -36,6 +36,20 @@ function LoginForm() {
   const searchParams = useSearchParams()
   const denied = searchParams.get('error') === 'AccessDenied'
 
+  const [email,   setEmail]   = useState('')
+  const [sending, setSending] = useState(false)
+  const [sent,    setSent]    = useState(false)
+
+  async function sendMagicLink(e: React.FormEvent) {
+    e.preventDefault()
+    setSending(true)
+    await signIn('email', { email, redirect: false, callbackUrl: '/dashboard' })
+    setSending(false)
+    // Always show the same confirmation, whether or not this address is
+    // actually allow-listed — the response shouldn't reveal that.
+    setSent(true)
+  }
+
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4"
@@ -53,7 +67,7 @@ function LoginForm() {
 
         <div className="card">
           <h2 className="text-base font-semibold text-white mb-1">Sign in to your account</h2>
-          <p className="text-xs text-slate-400 mb-6">Use your Google or GitHub account to continue.</p>
+          <p className="text-xs text-slate-400 mb-6">Use your Google or GitHub account, or a login link by email.</p>
 
           {denied && (
             <div className="flex items-start gap-2 text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2.5 mb-4">
@@ -79,6 +93,38 @@ function LoginForm() {
               Continue with GitHub
             </button>
           </div>
+
+          <div className="flex items-center gap-3 my-5">
+            <div className="h-px bg-surface-border flex-1" />
+            <span className="text-[11px] text-slate-500 uppercase tracking-wide">or</span>
+            <div className="h-px bg-surface-border flex-1" />
+          </div>
+
+          {sent ? (
+            <div className="flex items-start gap-2 text-sm text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 rounded-lg px-3 py-2.5">
+              <MailCheck className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <span>If that email has access, a login link is on its way — check your inbox.</span>
+            </div>
+          ) : (
+            <form onSubmit={sendMagicLink} className="space-y-2.5">
+              <input
+                type="email"
+                required
+                className="input"
+                placeholder="you@company.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+              <button
+                type="submit"
+                disabled={sending}
+                className="btn-primary w-full py-2.5 flex items-center justify-center gap-2"
+              >
+                <Mail className="w-4 h-4" />
+                {sending ? 'Sending…' : 'Send me a login link'}
+              </button>
+            </form>
+          )}
 
           <p className="text-[11px] text-slate-500 text-center mt-5 leading-relaxed">
             Access is restricted to authorised team members.<br />
