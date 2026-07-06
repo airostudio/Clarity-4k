@@ -16,6 +16,14 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    signIn({ user }) {
+      const allowed = (process.env.ALLOWED_EMAILS ?? '')
+        .split(',')
+        .map(e => e.trim().toLowerCase())
+        .filter(Boolean)
+      if (allowed.length === 0) return false
+      return allowed.includes((user.email ?? '').toLowerCase())
+    },
     jwt({ token, user }) {
       if (user) token.id = user.id
       return token

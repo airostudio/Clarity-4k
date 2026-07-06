@@ -1,7 +1,9 @@
 'use client'
 
+import { Suspense } from 'react'
 import { signIn } from 'next-auth/react'
-import { Zap } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { Zap, ShieldAlert } from 'lucide-react'
 
 function GoogleIcon() {
   return (
@@ -24,6 +26,17 @@ function GitHubIcon() {
 
 export default function LoginPage() {
   return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
+  )
+}
+
+function LoginForm() {
+  const searchParams = useSearchParams()
+  const denied = searchParams.get('error') === 'AccessDenied'
+
+  return (
     <div
       className="min-h-screen flex items-center justify-center px-4"
       style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(59,91,253,0.15) 0%, transparent 60%), #0f1117' }}
@@ -41,6 +54,13 @@ export default function LoginPage() {
         <div className="card">
           <h2 className="text-base font-semibold text-white mb-1">Sign in to your account</h2>
           <p className="text-xs text-slate-400 mb-6">Use your Google or GitHub account to continue.</p>
+
+          {denied && (
+            <div className="flex items-start gap-2 text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2.5 mb-4">
+              <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <span>That account isn&apos;t authorised for Clarity 4K. Contact your admin if you believe this is a mistake.</span>
+            </div>
+          )}
 
           <div className="space-y-3">
             <button
