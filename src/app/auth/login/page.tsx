@@ -2,8 +2,8 @@
 
 import { Suspense, useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useSearchParams } from 'next/navigation'
-import { Zap, ShieldAlert, Mail, MailCheck } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Zap, ShieldAlert, Mail, MailCheck, KeyRound } from 'lucide-react'
 
 function GoogleIcon() {
   return (
@@ -39,6 +39,7 @@ const ERROR_MESSAGES: Record<string, string> = {
 }
 
 function LoginForm() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const errorCode = searchParams.get('error')
   const errorMessage = errorCode
@@ -49,6 +50,12 @@ function LoginForm() {
   const [sending, setSending] = useState(false)
   const [sent,    setSent]    = useState(false)
 
+  const [showAdminLogin, setShowAdminLogin] = useState(false)
+  const [adminEmail,    setAdminEmail]    = useState('')
+  const [adminPassword, setAdminPassword] = useState('')
+  const [adminError,    setAdminError]    = useState('')
+  const [adminLoading,  setAdminLoading]  = useState(false)
+
   async function sendMagicLink(e: React.FormEvent) {
     e.preventDefault()
     setSending(true)
@@ -57,6 +64,24 @@ function LoginForm() {
     // Always show the same confirmation, whether or not this address is
     // actually allow-listed — the response shouldn't reveal that.
     setSent(true)
+  }
+
+  async function adminSignIn(e: React.FormEvent) {
+    e.preventDefault()
+    setAdminLoading(true)
+    setAdminError('')
+    const res = await signIn('credentials', {
+      email: adminEmail,
+      password: adminPassword,
+      redirect: false,
+      callbackUrl: '/dashboard',
+    })
+    if (res?.ok) {
+      router.push('/dashboard')
+    } else {
+      setAdminError('Invalid email or password.')
+      setAdminLoading(false)
+    }
   }
 
   return (
@@ -134,6 +159,49 @@ function LoginForm() {
               </button>
             </form>
           )}
+
+          <div className="mt-5 pt-4 border-t border-surface-border">
+            {showAdminLogin ? (
+              <form onSubmit={adminSignIn} className="space-y-2.5">
+                <input
+                  type="email"
+                  required
+                  className="input"
+                  placeholder="Admin email"
+                  value={adminEmail}
+                  onChange={e => setAdminEmail(e.target.value)}
+                />
+                <input
+                  type="password"
+                  required
+                  className="input"
+                  placeholder="Password"
+                  value={adminPassword}
+                  onChange={e => setAdminPassword(e.target.value)}
+                />
+                {adminError && (
+                  <div className="text-xs text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">
+                    {adminError}
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  disabled={adminLoading}
+                  className="btn-secondary w-full py-2 flex items-center justify-center gap-2 text-xs"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                  {adminLoading ? 'Signing in…' : 'Sign in with password'}
+                </button>
+              </form>
+            ) : (
+              <button
+                onClick={() => setShowAdminLogin(true)}
+                className="text-[11px] text-slate-500 hover:text-slate-300 transition-colors mx-auto block"
+              >
+                Admin testing login
+              </button>
+            )}
+          </div>
 
           <p className="text-[11px] text-slate-500 text-center mt-5 leading-relaxed">
             Access is restricted to authorised team members.<br />
