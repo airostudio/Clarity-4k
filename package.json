@@ -4,12 +4,10 @@
   "description": "Clarity 4K — Talent Management Platform",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:push": "prisma db push",
-    "db:seed": "node prisma/seed.js",
-    "db:studio": "prisma studio"
+    "db:seed": "node supabase/seed.js"
   },
   "repository": {
     "type": "git",
