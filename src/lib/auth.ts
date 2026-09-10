@@ -7,7 +7,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { SupabaseAdapter } from '@auth/supabase-adapter'
 import nodemailer from 'nodemailer'
 import { createHash, timingSafeEqual } from 'crypto'
-import { resolveAccess } from '@/lib/rbac'
+import { resolveAccess, normalizeEmail } from '@/lib/rbac'
 import { getAgencyBranding } from '@/lib/agency'
 
 // Fixed-length digest comparison so a mismatched-length input can't short-circuit
@@ -117,7 +117,11 @@ export const authOptions: NextAuthOptions = {
         if (!adminEmail || !adminPassword) return null
         if (!credentials?.email || !credentials?.password) return null
 
-        const emailMatches    = safeEqual(credentials.email.toLowerCase(), adminEmail.toLowerCase())
+        const submitted = normalizeEmail(credentials.email)
+        const expected   = normalizeEmail(adminEmail)
+        if (!submitted || !expected) return null
+
+        const emailMatches    = safeEqual(submitted, expected)
         const passwordMatches = safeEqual(credentials.password, adminPassword)
         if (!emailMatches || !passwordMatches) return null
 
