@@ -2,8 +2,13 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, toCamel } from '@/lib/supabase'
+import { requireRole } from '@/lib/apiAuth'
+import { validateBody, CampaignCreateSchema } from '@/lib/validation'
 
 export async function GET(req: NextRequest) {
+  const auth = await requireRole('VIEWER')
+  if (!auth.ok) return auth.response
+
   const { searchParams } = new URL(req.url)
   const status = searchParams.get('status') ?? ''
 
@@ -20,7 +25,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { talentIds, ...body } = await req.json()
+  const auth = await requireRole('MANAGER')
+  if (!auth.ok) return auth.response
+
+  const validation = await validateBody(req, CampaignCreateSchema)
+  if (!validation.ok) return validation.response
+  const { talentIds, ...body } = validation.data
 
   const row: any = {
     title:       body.title,
@@ -28,8 +38,8 @@ export async function POST(req: NextRequest) {
     type:        body.type,
     status:      body.status ?? 'DRAFT',
     start_date:  body.startDate,
-    end_date:    body.endDate   || null,
-    budget:      body.budget    ? parseFloat(body.budget) : null,
+    end_date:    body.endDate ?? null,
+    budget:      body.budget ?? null,
     goal:        body.goal,
     platform:    body.platform,
   }

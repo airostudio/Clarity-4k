@@ -2,8 +2,13 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, toCamel } from '@/lib/supabase'
+import { requireRole } from '@/lib/apiAuth'
+import { validateBody, TalentUpdateSchema } from '@/lib/validation'
 
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await requireRole('VIEWER')
+  if (!auth.ok) return auth.response
+
   const [
     { data: talent, error },
     { data: earnings },
@@ -30,19 +35,25 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const body = await req.json()
+  const auth = await requireRole('MANAGER')
+  if (!auth.ok) return auth.response
+
+  const validation = await validateBody(req, TalentUpdateSchema)
+  if (!validation.ok) return validation.response
+  const body = validation.data
+
   const row: any = {}
-  if (body.name)          row.name          = body.name
-  if (body.stageName)     row.stage_name    = body.stageName
-  if (body.bio)           row.bio           = body.bio
-  if (body.phone)         row.phone         = body.phone
-  if (body.nationality)   row.nationality   = body.nationality
-  if (body.status)        row.status        = body.status
-  if (body.tier)          row.tier          = body.tier
-  if (body.agencyFee)     row.agency_fee    = body.agencyFee
-  if (body.tags)          row.tags          = body.tags
-  if (body.platformLinks) row.platform_links = body.platformLinks
-  if (body.socialLinks)   row.social_links   = body.socialLinks
+  if (body.name          !== undefined) row.name           = body.name
+  if (body.stageName     !== undefined) row.stage_name     = body.stageName
+  if (body.bio            !== undefined) row.bio           = body.bio
+  if (body.phone          !== undefined) row.phone         = body.phone
+  if (body.nationality    !== undefined) row.nationality   = body.nationality
+  if (body.status         !== undefined) row.status        = body.status
+  if (body.tier           !== undefined) row.tier          = body.tier
+  if (body.agencyFee      !== undefined) row.agency_fee    = body.agencyFee
+  if (body.tags           !== undefined) row.tags          = body.tags
+  if (body.platformLinks  !== undefined) row.platform_links = body.platformLinks
+  if (body.socialLinks    !== undefined) row.social_links   = body.socialLinks
   row.updated_at = new Date().toISOString()
 
   const { data, error } = await supabase.from('talent').update(row).eq('id', params.id).select().single()
@@ -51,6 +62,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+  const auth = await requireRole('ADMIN')
+  if (!auth.ok) return auth.response
+
   const { error } = await supabase.from('talent').delete().eq('id', params.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json({ success: true })

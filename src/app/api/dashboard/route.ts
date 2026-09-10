@@ -2,8 +2,12 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 import { supabase, toCamel } from '@/lib/supabase'
+import { requireRole } from '@/lib/apiAuth'
 
 export async function GET() {
+  const auth = await requireRole('VIEWER')
+  if (!auth.ok) return auth.response
+
   const [
     { count: totalTalent },
     { count: activeTalent },

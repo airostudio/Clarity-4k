@@ -2,8 +2,13 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, toCamel } from '@/lib/supabase'
+import { requireRole } from '@/lib/apiAuth'
+import { validateBody, EarningCreateSchema } from '@/lib/validation'
 
 export async function GET(req: NextRequest) {
+  const auth = await requireRole('VIEWER')
+  if (!auth.ok) return auth.response
+
   const { searchParams } = new URL(req.url)
   const talentId = searchParams.get('talentId') ?? ''
   const year     = searchParams.get('year') ?? ''
@@ -23,16 +28,22 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json()
+  const auth = await requireRole('MANAGER')
+  if (!auth.ok) return auth.response
+
+  const validation = await validateBody(req, EarningCreateSchema)
+  if (!validation.ok) return validation.response
+  const body = validation.data
+
   const { data, error } = await supabase
     .from('earnings')
     .insert({
       talent_id:   body.talentId,
       platform:    body.platform,
-      amount:      parseFloat(body.amount),
+      amount:      body.amount,
       currency:    body.currency ?? 'USD',
-      month:       parseInt(body.month),
-      year:        parseInt(body.year),
+      month:       body.month,
+      year:        body.year,
       description: body.description,
     })
     .select()

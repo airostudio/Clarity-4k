@@ -2,8 +2,12 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, toCamel } from '@/lib/supabase'
+import { requireRole } from '@/lib/apiAuth'
 
 export async function GET(req: NextRequest) {
+  const auth = await requireRole('VIEWER')
+  if (!auth.ok) return auth.response
+
   const { searchParams } = new URL(req.url)
   const year  = parseInt(searchParams.get('year') ?? String(new Date().getFullYear()))
   const month = searchParams.get('month') ?? ''

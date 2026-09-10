@@ -7,15 +7,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { SupabaseAdapter } from '@auth/supabase-adapter'
 import nodemailer from 'nodemailer'
 import { createHash, timingSafeEqual } from 'crypto'
-
-function isAllowedEmail(email: string | null | undefined): boolean {
-  const allowed = (process.env.ALLOWED_EMAILS ?? '')
-    .split(',')
-    .map(e => e.trim().toLowerCase())
-    .filter(Boolean)
-  if (allowed.length === 0) return false
-  return allowed.includes((email ?? '').toLowerCase())
-}
+import { resolveAccess } from '@/lib/rbac'
 
 // Fixed-length digest comparison so a mismatched-length input can't short-circuit
 // timingSafeEqual (which throws on unequal-length buffers) or leak length via timing.
@@ -63,9 +55,9 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       // Without this, signing in with a second provider under the same email
       // as an existing account (e.g. Google first, then GitHub later) throws
-      // OAuthAccountNotLinked instead of just linking it. Since ALLOWED_EMAILS
-      // is already the real access gate, trusting the email match here is safe
-      // for this small, single-team app.
+      // OAuthAccountNotLinked instead of just linking it. Since the staff
+      // table is already the real access gate, trusting the email match here
+      // is safe for this app.
       allowDangerousEmailAccountLinking: true,
     }),
     GitHubProvider({
@@ -80,11 +72,12 @@ export const authOptions: NextAuthOptions = {
       // flow would email anyone who types a request in, before it ever knows
       // whether that email will pass the signIn callback below — that's both
       // an open mail-relay (arbitrary inboxes get "sign in to Clarity 4K"
-      // messages) and an oracle for probing which emails are allow-listed.
-      // Silently no-op-ing for disallowed emails means the UI always shows
-      // the same "check your inbox" response either way.
+      // messages) and an oracle for probing who's on staff. Silently no-op-ing
+      // for disallowed emails means the UI always shows the same "check your
+      // inbox" response either way.
       async sendVerificationRequest({ identifier, url }) {
-        if (!isAllowedEmail(identifier)) return
+        const { allowed } = await resolveAccess(identifier)
+        if (!allowed) return
 
         const transport = nodemailer.createTransport(process.env.EMAIL_SERVER)
         await transport.sendMail({
@@ -131,18 +124,28 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    signIn({ user }) {
-      return isAllowedEmail(user.email)
+    // Resolves the role here and stashes it on the same `user` object that
+    // the jwt callback receives next (same reference — mutating it is how
+    // data flows from signIn into jwt in NextAuth v4), so this stays a single
+    // access-control lookup per sign-in rather than repeating it per callback.
+    async signIn({ user }) {
+      const { allowed, role } = await resolveAccess(user.email)
+      if (allowed) (user as any).role = role
+      return allowed
     },
     jwt({ token, user }) {
       if (user) {
         token.id = user.id
         token.email = user.email
+        token.role = (user as any).role
       }
       return token
     },
     session({ session, token }) {
-      if (session.user) (session.user as any).id = token.id
+      if (session.user) {
+        (session.user as any).id = token.id
+        ;(session.user as any).role = token.role
+      }
       return session
     },
   },

@@ -100,7 +100,54 @@ create table if not exists agency_settings (
 
 insert into agency_settings (id) values ('default') on conflict (id) do nothing;
 
--- ── Disable RLS (admin platform — all users are trusted staff) ───────────────
+-- ── Staff (team members + roles) ──────────────────────────────────────────────
+-- The access-control source of truth: who can sign in, and what they can do.
+-- Replaces the old ALLOWED_EMAILS env var — managed from Settings > Team
+-- instead of requiring a redeploy to add/remove someone. ADMIN_EMAIL (env var)
+-- is a separate break-glass bootstrap account, always treated as ADMIN, so a
+-- fresh install is never locked out before anyone exists in this table.
+create table if not exists staff (
+  id         uuid primary key default uuid_generate_v4(),
+  email      text unique not null,
+  name       text,
+  role       text not null default 'VIEWER', -- ADMIN | MANAGER | VIEWER
+  status     text not null default 'ACTIVE', -- ACTIVE | INACTIVE
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- ── Clients (brand / sponsor deals) ───────────────────────────────────────────
+create table if not exists clients (
+  id            uuid primary key default uuid_generate_v4(),
+  name          text not null,
+  contact_name  text,
+  contact_email text,
+  contact_phone text,
+  website       text,
+  industry      text,
+  status        text not null default 'PROSPECT', -- PROSPECT | ACTIVE | INACTIVE
+  notes         text,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+create table if not exists deals (
+  id          uuid primary key default uuid_generate_v4(),
+  client_id   uuid not null references clients(id) on delete cascade,
+  talent_id   uuid references talent(id) on delete set null,
+  title       text not null,
+  status      text not null default 'PROSPECT', -- PROSPECT | NEGOTIATING | ACTIVE | COMPLETED | CANCELLED
+  value       float,
+  currency    text default 'USD',
+  start_date  timestamptz,
+  end_date    timestamptz,
+  description text,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+-- ── Disable RLS (single-tenant per deployment — service role does all access
+--    control at the application layer via the staff table + RBAC checks) ─────
 alter table talent          disable row level security;
 alter table earnings        disable row level security;
 alter table expenses        disable row level security;
@@ -108,6 +155,9 @@ alter table campaigns       disable row level security;
 alter table campaign_talent disable row level security;
 alter table notes           disable row level security;
 alter table agency_settings disable row level security;
+alter table staff           disable row level security;
+alter table clients         disable row level security;
+alter table deals           disable row level security;
 
 -- ── NextAuth adapter schema ────────────────────────────────────────────────
 -- Backs the magic-link (Email) login: stores users/sessions created by the

@@ -2,8 +2,13 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, toCamel } from '@/lib/supabase'
+import { requireRole } from '@/lib/apiAuth'
+import { validateBody, TalentCreateSchema } from '@/lib/validation'
 
 export async function GET(req: NextRequest) {
+  const auth = await requireRole('VIEWER')
+  if (!auth.ok) return auth.response
+
   const { searchParams } = new URL(req.url)
   const search = searchParams.get('search') ?? ''
   const status = searchParams.get('status') ?? ''
@@ -30,8 +35,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json()
-  // Convert camelCase keys to snake_case for insert
+  const auth = await requireRole('MANAGER')
+  if (!auth.ok) return auth.response
+
+  const validation = await validateBody(req, TalentCreateSchema)
+  if (!validation.ok) return validation.response
+  const body = validation.data
+
   const row: any = {
     name:           body.name,
     stage_name:     body.stageName,
