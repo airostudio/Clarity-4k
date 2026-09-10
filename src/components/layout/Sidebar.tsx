@@ -5,13 +5,14 @@ import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import {
   LayoutDashboard, Users, Megaphone, DollarSign,
-  Settings, Zap, LogOut, ChevronRight,
+  Settings, Zap, LogOut, ChevronRight, Handshake,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const nav = [
   { href: '/dashboard',   label: 'Dashboard',   icon: LayoutDashboard },
   { href: '/talent',      label: 'Talent Pool',  icon: Users },
+  { href: '/clients',     label: 'Clients',      icon: Handshake },
   { href: '/marketing',   label: 'Marketing',    icon: Megaphone },
   { href: '/accounting',  label: 'Accounting',   icon: DollarSign },
   { href: '/settings',    label: 'Settings',     icon: Settings },
