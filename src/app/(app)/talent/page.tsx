@@ -43,7 +43,7 @@ export default function TalentPage() {
         <div className="flex flex-wrap gap-3 items-center justify-between">
           <div className="flex gap-2 flex-1 min-w-0 flex-wrap">
             <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
               <input
                 className="input pl-9"
                 placeholder="Search name, stage name, tags…"
@@ -68,7 +68,7 @@ export default function TalentPage() {
             <div className="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : talents.length === 0 ? (
-          <div className="text-center py-16 text-slate-500">
+          <div className="text-center py-16 text-stone-500">
             <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p>No talent found</p>
           </div>
@@ -97,11 +97,11 @@ function TalentCard({ talent: t, onRefresh }: { talent: Talent; onRefresh: () =>
           </div>
           <div className="min-w-0">
             <div className="font-semibold text-white text-sm truncate">{t.name}</div>
-            <div className="text-xs text-slate-400 truncate">{t.stageName || 'No stage name'}</div>
+            <div className="text-xs text-stone-400 truncate">{t.stageName || 'No stage name'}</div>
           </div>
         </div>
         <Link href={`/talent/${t.id}`} className="opacity-0 group-hover:opacity-100 transition-opacity">
-          <ExternalLink className="w-4 h-4 text-slate-400 hover:text-white" />
+          <ExternalLink className="w-4 h-4 text-stone-400 hover:text-white" />
         </Link>
       </div>
 
@@ -113,18 +113,18 @@ function TalentCard({ talent: t, onRefresh }: { talent: Talent; onRefresh: () =>
 
       {/* Bio */}
       {t.bio && (
-        <p className="text-xs text-slate-400 mb-3 line-clamp-2 leading-relaxed">{t.bio}</p>
+        <p className="text-xs text-stone-400 mb-3 line-clamp-2 leading-relaxed">{t.bio}</p>
       )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-2 mb-3">
         <div className="bg-surface rounded-lg px-3 py-2 text-center">
           <div className="text-sm font-semibold text-emerald-400">{formatCurrency(t.totalEarnings ?? 0)}</div>
-          <div className="text-xs text-slate-500">Total Earned</div>
+          <div className="text-xs text-stone-500">Total Earned</div>
         </div>
         <div className="bg-surface rounded-lg px-3 py-2 text-center">
           <div className="text-sm font-semibold text-white">{t._count?.campaigns ?? 0}</div>
-          <div className="text-xs text-slate-500">Campaigns</div>
+          <div className="text-xs text-stone-500">Campaigns</div>
         </div>
       </div>
 
@@ -132,7 +132,7 @@ function TalentCard({ talent: t, onRefresh }: { talent: Talent; onRefresh: () =>
       {t.tags && (
         <div className="flex flex-wrap gap-1 mb-3">
           {t.tags.split(',').slice(0, 3).map(tag => (
-            <span key={tag} className="text-xs bg-surface px-2 py-0.5 rounded text-slate-400">{tag.trim()}</span>
+            <span key={tag} className="text-xs bg-surface px-2 py-0.5 rounded text-stone-400">{tag.trim()}</span>
           ))}
         </div>
       )}

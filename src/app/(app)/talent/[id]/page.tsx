@@ -77,7 +77,7 @@ export default function TalentProfilePage() {
 
       <div className="p-6 space-y-5 max-w-[1200px]">
         {/* Back */}
-        <Link href="/talent" className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors w-fit">
+        <Link href="/talent" className="flex items-center gap-1.5 text-sm text-stone-400 hover:text-white transition-colors w-fit">
           <ArrowLeft className="w-4 h-4" /> Back to Talent Pool
         </Link>
 
@@ -94,20 +94,20 @@ export default function TalentProfilePage() {
                   <span className={`badge ${TIER_COLORS[talent.tier]}`}>{talent.tier}</span>
                   <span className={`badge ${STATUS_COLORS[talent.status]}`}>{talent.status}</span>
                 </div>
-                <div className="text-slate-400 mt-0.5 text-sm">{talent.stageName || 'No stage name'}</div>
+                <div className="text-stone-400 mt-0.5 text-sm">{talent.stageName || 'No stage name'}</div>
                 <div className="flex items-center gap-4 mt-2 flex-wrap">
                   {talent.email && (
-                    <a href={`mailto:${talent.email}`} className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white">
+                    <a href={`mailto:${talent.email}`} className="flex items-center gap-1.5 text-xs text-stone-400 hover:text-white">
                       <Mail className="w-3.5 h-3.5" /> {talent.email}
                     </a>
                   )}
                   {talent.phone && (
-                    <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span className="flex items-center gap-1.5 text-xs text-stone-400">
                       <Phone className="w-3.5 h-3.5" /> {talent.phone}
                     </span>
                   )}
                   {talent.nationality && (
-                    <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span className="flex items-center gap-1.5 text-xs text-stone-400">
                       <Globe className="w-3.5 h-3.5" /> {talent.nationality}
                     </span>
                   )}
@@ -132,13 +132,13 @@ export default function TalentProfilePage() {
           </div>
 
           {talent.bio && (
-            <p className="text-sm text-slate-300 mt-4 leading-relaxed border-t border-surface-border pt-4">{talent.bio}</p>
+            <p className="text-sm text-stone-300 mt-4 leading-relaxed border-t border-surface-border pt-4">{talent.bio}</p>
           )}
 
           {talent.tags && (
             <div className="flex flex-wrap gap-1.5 mt-3">
               {talent.tags.split(',').map((tag: string) => (
-                <span key={tag} className="text-xs bg-surface border border-surface-border px-2 py-0.5 rounded text-slate-400">
+                <span key={tag} className="text-xs bg-surface border border-surface-border px-2 py-0.5 rounded text-stone-400">
                   {tag.trim()}
                 </span>
               ))}
@@ -156,7 +156,7 @@ export default function TalentProfilePage() {
           ].map(s => (
             <div key={s.label} className="card text-center">
               <div className={`text-xl font-bold ${s.color.split(' ')[0]}`}>{s.value}</div>
-              <div className="text-xs text-slate-400 mt-1">{s.label}</div>
+              <div className="text-xs text-stone-400 mt-1">{s.label}</div>
             </div>
           ))}
         </div>
@@ -168,7 +168,7 @@ export default function TalentProfilePage() {
               className={`px-4 py-2 text-sm font-medium capitalize whitespace-nowrap transition-colors border-b-2 -mb-px ${
                 tab === t
                   ? 'text-white border-brand-500'
-                  : 'text-slate-400 border-transparent hover:text-slate-200'
+                  : 'text-stone-400 border-transparent hover:text-stone-200'
               }`}>
               {t}
             </button>
@@ -202,7 +202,7 @@ export default function TalentProfilePage() {
                   { label: 'Campaigns',    value: `${talent.campaigns.length} total` },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex justify-between text-sm">
-                    <dt className="text-slate-400">{label}</dt>
+                    <dt className="text-stone-400">{label}</dt>
                     <dd className="font-medium text-white">{value}</dd>
                   </div>
                 ))}
@@ -232,16 +232,16 @@ export default function TalentProfilePage() {
               <tbody>
                 {(talent.earnings as any[]).map((e: any) => (
                   <tr key={e.id} className="table-row">
-                    <td className="table-cell text-slate-300">{e.month}/{e.year}</td>
+                    <td className="table-cell text-stone-300">{e.month}/{e.year}</td>
                     <td className="table-cell">
                       <span className="badge text-blue-400 bg-blue-400/10 border-blue-400/20">{e.platform}</span>
                     </td>
                     <td className="table-cell font-semibold text-emerald-400">{formatCurrency(e.amount)}</td>
-                    <td className="table-cell text-slate-400 text-xs">{e.description || '—'}</td>
+                    <td className="table-cell text-stone-400 text-xs">{e.description || '—'}</td>
                   </tr>
                 ))}
                 {talent.earnings.length === 0 && (
-                  <tr><td colSpan={4} className="table-cell text-center text-slate-500 py-8">No earnings recorded</td></tr>
+                  <tr><td colSpan={4} className="table-cell text-center text-stone-500 py-8">No earnings recorded</td></tr>
                 )}
               </tbody>
             </table>
@@ -269,16 +269,16 @@ export default function TalentProfilePage() {
               <tbody>
                 {(talent.expenses as any[]).map((e: any) => (
                   <tr key={e.id} className="table-row">
-                    <td className="table-cell text-slate-300">{formatDate(e.date)}</td>
+                    <td className="table-cell text-stone-300">{formatDate(e.date)}</td>
                     <td className="table-cell">
                       <span className="badge text-amber-400 bg-amber-400/10 border-amber-400/20">{e.category}</span>
                     </td>
                     <td className="table-cell font-semibold text-red-400">{formatCurrency(e.amount)}</td>
-                    <td className="table-cell text-slate-400 text-xs">{e.description || '—'}</td>
+                    <td className="table-cell text-stone-400 text-xs">{e.description || '—'}</td>
                   </tr>
                 ))}
                 {talent.expenses.length === 0 && (
-                  <tr><td colSpan={4} className="table-cell text-center text-slate-500 py-8">No expenses recorded</td></tr>
+                  <tr><td colSpan={4} className="table-cell text-center text-stone-500 py-8">No expenses recorded</td></tr>
                 )}
               </tbody>
             </table>
@@ -294,13 +294,13 @@ export default function TalentProfilePage() {
                 <div key={ct.id} className="flex items-center justify-between p-3 bg-surface rounded-lg">
                   <div>
                     <div className="font-medium text-white text-sm">{ct.campaign.title}</div>
-                    <div className="text-xs text-slate-400">{ct.campaign.type}</div>
+                    <div className="text-xs text-stone-400">{ct.campaign.type}</div>
                   </div>
                   <span className={`badge ${CAMPAIGN_STATUS_COLORS[ct.campaign.status]}`}>{ct.campaign.status}</span>
                 </div>
               ))}
               {talent.campaigns.length === 0 && (
-                <p className="text-center text-slate-500 py-8">No campaign participation</p>
+                <p className="text-center text-stone-500 py-8">No campaign participation</p>
               )}
             </div>
           </div>
@@ -313,8 +313,8 @@ export default function TalentProfilePage() {
             <div className="space-y-3">
               {(talent.notes as any[]).map((n: any) => (
                 <div key={n.id} className="bg-surface rounded-lg p-3">
-                  <p className="text-sm text-slate-200">{n.content}</p>
-                  <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
+                  <p className="text-sm text-stone-200">{n.content}</p>
+                  <div className="flex items-center gap-2 mt-2 text-xs text-stone-500">
                     <span>{n.author}</span>
                     <span>·</span>
                     <span>{formatDate(n.createdAt)}</span>
@@ -322,7 +322,7 @@ export default function TalentProfilePage() {
                 </div>
               ))}
               {talent.notes.length === 0 && (
-                <p className="text-center text-slate-500 py-8">No notes yet</p>
+                <p className="text-center text-stone-500 py-8">No notes yet</p>
               )}
             </div>
           </div>

@@ -58,7 +58,7 @@ export default function MarketingPage() {
           ].map(s => (
             <div key={s.label} className="card">
               <div className={`text-2xl font-bold ${s.color.split(' ')[0]}`}>{s.value}</div>
-              <div className="text-xs text-slate-400 mt-1">{s.label}</div>
+              <div className="text-xs text-stone-400 mt-1">{s.label}</div>
             </div>
           ))}
         </div>
@@ -72,7 +72,7 @@ export default function MarketingPage() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   status === s
                     ? 'bg-brand-600 text-white'
-                    : 'bg-surface-muted text-slate-400 hover:text-white'
+                    : 'bg-surface-muted text-stone-400 hover:text-white'
                 }`}>
                 {s || 'All'}
               </button>
@@ -88,7 +88,7 @@ export default function MarketingPage() {
             <div className="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : campaigns.length === 0 ? (
-          <div className="text-center py-16 text-slate-500">
+          <div className="text-center py-16 text-stone-500">
             <Megaphone className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p>No campaigns found</p>
           </div>
@@ -133,20 +133,20 @@ function CampaignCard({ campaign: c, onClick }: { campaign: Campaign; onClick: (
           </div>
           <div className="min-w-0">
             <div className="font-semibold text-white text-sm truncate">{c.title}</div>
-            <div className="text-xs text-slate-400">{c.type.replace('_', ' ')}</div>
+            <div className="text-xs text-stone-400">{c.type.replace('_', ' ')}</div>
           </div>
         </div>
         <span className={`badge flex-shrink-0 ${CAMPAIGN_STATUS_COLORS[c.status]}`}>{c.status}</span>
       </div>
 
       {c.description && (
-        <p className="text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">{c.description}</p>
+        <p className="text-xs text-stone-400 line-clamp-2 mb-3 leading-relaxed">{c.description}</p>
       )}
 
       {/* Budget bar */}
       {c.budget && (
         <div className="mb-3">
-          <div className="flex justify-between text-xs text-slate-400 mb-1.5">
+          <div className="flex justify-between text-xs text-stone-400 mb-1.5">
             <span>Budget spend</span>
             <span>{formatCurrency(c.spent)} / {formatCurrency(c.budget)}</span>
           </div>
@@ -164,15 +164,15 @@ function CampaignCard({ campaign: c, onClick }: { campaign: Campaign; onClick: (
         <div className="grid grid-cols-3 gap-2 mb-3">
           <div className="bg-surface rounded-lg p-2 text-center">
             <div className="text-xs font-semibold text-white">{(metrics.impressions / 1000).toFixed(0)}k</div>
-            <div className="text-[10px] text-slate-500">Impressions</div>
+            <div className="text-[10px] text-stone-500">Impressions</div>
           </div>
           <div className="bg-surface rounded-lg p-2 text-center">
             <div className="text-xs font-semibold text-white">{metrics.conversions?.toLocaleString()}</div>
-            <div className="text-[10px] text-slate-500">Conversions</div>
+            <div className="text-[10px] text-stone-500">Conversions</div>
           </div>
           <div className="bg-surface rounded-lg p-2 text-center">
             <div className="text-xs font-semibold text-emerald-400">{formatCurrency(metrics.revenue)}</div>
-            <div className="text-[10px] text-slate-500">Revenue</div>
+            <div className="text-[10px] text-stone-500">Revenue</div>
           </div>
         </div>
       )}
@@ -188,15 +188,15 @@ function CampaignCard({ campaign: c, onClick }: { campaign: Campaign; onClick: (
               </div>
             ))}
           </div>
-          <span className="text-xs text-slate-400">{c.talents.length} talent{c.talents.length !== 1 ? 's' : ''}</span>
+          <span className="text-xs text-stone-400">{c.talents.length} talent{c.talents.length !== 1 ? 's' : ''}</span>
           {c.platform && (
-            <span className="ml-auto text-xs text-slate-500">{c.platform}</span>
+            <span className="ml-auto text-xs text-stone-500">{c.platform}</span>
           )}
         </div>
       )}
 
       {/* Dates */}
-      <div className="text-xs text-slate-500 mt-2">
+      <div className="text-xs text-stone-500 mt-2">
         {formatDate(c.startDate)}{c.endDate ? ` → ${formatDate(c.endDate)}` : ' (ongoing)'}
       </div>
     </button>

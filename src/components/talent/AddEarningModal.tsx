@@ -29,24 +29,24 @@ export default function AddEarningModal({ talentId, onClose, onSuccess }: Props)
       <div className="bg-surface-card border border-surface-border rounded-2xl w-full max-w-md">
         <div className="flex items-center justify-between p-5 border-b border-surface-border">
           <h2 className="text-base font-semibold text-white">Add Earning</h2>
-          <button onClick={onClose}><X className="w-5 h-5 text-slate-400 hover:text-white" /></button>
+          <button onClick={onClose}><X className="w-5 h-5 text-stone-400 hover:text-white" /></button>
         </div>
         <form onSubmit={submit} className="p-5 space-y-4">
           <div>
-            <label className="block text-sm text-slate-400 mb-1.5">Platform</label>
+            <label className="block text-sm text-stone-400 mb-1.5">Platform</label>
             <select className="input" value={form.platform} onChange={e => set('platform', e.target.value)}>
               {['OnlyFans', 'Instagram', 'TikTok', 'YouTube', 'Brand Deal', 'Other'].map(p =>
                 <option key={p}>{p}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm text-slate-400 mb-1.5">Amount (USD)</label>
+            <label className="block text-sm text-stone-400 mb-1.5">Amount (USD)</label>
             <input className="input" type="number" min="0" step="0.01" value={form.amount}
               onChange={e => set('amount', e.target.value)} required />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Month</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Month</label>
               <select className="input" value={form.month} onChange={e => set('month', e.target.value)}>
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -56,12 +56,12 @@ export default function AddEarningModal({ talentId, onClose, onSuccess }: Props)
               </select>
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Year</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Year</label>
               <input className="input" type="number" value={form.year} onChange={e => set('year', e.target.value)} />
             </div>
           </div>
           <div>
-            <label className="block text-sm text-slate-400 mb-1.5">Description</label>
+            <label className="block text-sm text-stone-400 mb-1.5">Description</label>
             <input className="input" value={form.description} onChange={e => set('description', e.target.value)}
               placeholder="e.g. Monthly subscription revenue" />
           </div>

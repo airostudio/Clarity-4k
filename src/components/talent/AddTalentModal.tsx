@@ -49,7 +49,7 @@ export default function AddTalentModal({ onClose, onSuccess }: Props) {
       <div className="bg-surface-card border border-surface-border rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-surface-border">
           <h2 className="text-lg font-semibold text-white">Add New Talent</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-white">
+          <button onClick={onClose} className="text-stone-400 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -57,33 +57,33 @@ export default function AddTalentModal({ onClose, onSuccess }: Props) {
         <form onSubmit={submit} className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Full Name *</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Full Name *</label>
               <input className="input" value={form.name} onChange={e => set('name', e.target.value)} required />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Stage Name</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Stage Name</label>
               <input className="input" value={form.stageName} onChange={e => set('stageName', e.target.value)} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Email *</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Email *</label>
               <input className="input" type="email" value={form.email} onChange={e => set('email', e.target.value)} required />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Phone</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Phone</label>
               <input className="input" value={form.phone} onChange={e => set('phone', e.target.value)} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Nationality</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Nationality</label>
               <input className="input" value={form.nationality} onChange={e => set('nationality', e.target.value)} />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Agency Fee (%)</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Agency Fee (%)</label>
               <input className="input" type="number" min="0" max="50" value={form.agencyFee}
                 onChange={e => set('agencyFee', e.target.value)} />
             </div>
@@ -91,7 +91,7 @@ export default function AddTalentModal({ onClose, onSuccess }: Props) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Tier</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Tier</label>
               <select className="input" value={form.tier} onChange={e => set('tier', e.target.value)}>
                 <option value="STANDARD">Standard</option>
                 <option value="PREMIUM">Premium</option>
@@ -99,7 +99,7 @@ export default function AddTalentModal({ onClose, onSuccess }: Props) {
               </select>
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Status</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Status</label>
               <select className="input" value={form.status} onChange={e => set('status', e.target.value)}>
                 <option value="ACTIVE">Active</option>
                 <option value="PENDING">Pending</option>
@@ -109,26 +109,26 @@ export default function AddTalentModal({ onClose, onSuccess }: Props) {
           </div>
 
           <div>
-            <label className="block text-sm text-slate-400 mb-1.5">Bio</label>
+            <label className="block text-sm text-stone-400 mb-1.5">Bio</label>
             <textarea className="input resize-none" rows={3} value={form.bio}
               onChange={e => set('bio', e.target.value)} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">OnlyFans URL</label>
+              <label className="block text-sm text-stone-400 mb-1.5">OnlyFans URL</label>
               <input className="input" value={form.onlyfans} onChange={e => set('onlyfans', e.target.value)}
                 placeholder="https://onlyfans.com/…" />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Instagram URL</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Instagram URL</label>
               <input className="input" value={form.instagram} onChange={e => set('instagram', e.target.value)}
                 placeholder="https://instagram.com/…" />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm text-slate-400 mb-1.5">Tags (comma-separated)</label>
+            <label className="block text-sm text-stone-400 mb-1.5">Tags (comma-separated)</label>
             <input className="input" value={form.tags} onChange={e => set('tags', e.target.value)}
               placeholder="fitness, lifestyle, fashion" />
           </div>

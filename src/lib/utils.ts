@@ -25,18 +25,18 @@ export const STATUS_COLORS: Record<string, string> = {
 export const CAMPAIGN_STATUS_COLORS: Record<string, string> = {
   ACTIVE:    'text-emerald-400 bg-emerald-400/10 border-emerald-400/30',
   COMPLETED: 'text-blue-400   bg-blue-400/10   border-blue-400/30',
-  DRAFT:     'text-slate-400  bg-slate-400/10  border-slate-400/30',
+  DRAFT:     'text-stone-400  bg-stone-400/10  border-stone-400/30',
   PAUSED:    'text-amber-400  bg-amber-400/10  border-amber-400/30',
 }
 
 export const CLIENT_STATUS_COLORS: Record<string, string> = {
   ACTIVE:   'text-emerald-400 bg-emerald-400/10 border-emerald-400/30',
   PROSPECT: 'text-amber-400  bg-amber-400/10  border-amber-400/30',
-  INACTIVE: 'text-slate-400  bg-slate-400/10  border-slate-400/30',
+  INACTIVE: 'text-stone-400  bg-stone-400/10  border-stone-400/30',
 }
 
 export const DEAL_STATUS_COLORS: Record<string, string> = {
-  PROSPECT:    'text-slate-400  bg-slate-400/10  border-slate-400/30',
+  PROSPECT:    'text-stone-400  bg-stone-400/10  border-stone-400/30',
   NEGOTIATING: 'text-amber-400  bg-amber-400/10  border-amber-400/30',
   ACTIVE:      'text-emerald-400 bg-emerald-400/10 border-emerald-400/30',
   COMPLETED:   'text-blue-400   bg-blue-400/10   border-blue-400/30',

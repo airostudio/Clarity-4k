@@ -133,17 +133,17 @@ export default function DashboardPage() {
             </h3>
             <div className="space-y-3">
               {topEarners.length === 0 && (
-                <p className="text-sm text-slate-500 text-center py-4">No data this month</p>
+                <p className="text-sm text-stone-500 text-center py-4">No data this month</p>
               )}
               {topEarners.map((t, i) => (
                 <div key={t.id} className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-500 w-4">{i + 1}</span>
-                  <div className="w-8 h-8 rounded-full bg-surface-muted flex items-center justify-center text-xs font-bold text-slate-300 flex-shrink-0">
+                  <span className="text-xs font-bold text-stone-500 w-4">{i + 1}</span>
+                  <div className="w-8 h-8 rounded-full bg-surface-muted flex items-center justify-center text-xs font-bold text-stone-300 flex-shrink-0">
                     {t.name?.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-white truncate">{t.stageName || t.name}</div>
-                    <div className="text-xs text-slate-400">{t.tier}</div>
+                    <div className="text-xs text-stone-400">{t.tier}</div>
                   </div>
                   <div className="text-sm font-semibold text-emerald-400">{formatCurrency(t.amount)}</div>
                 </div>
@@ -169,7 +169,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-white">{t.name}</div>
-                    <div className="text-xs text-slate-400">{t.stageName || '—'}</div>
+                    <div className="text-xs text-stone-400">{t.stageName || '—'}</div>
                   </div>
                   <span className={`badge ${TIER_COLORS[t.tier]}`}>{t.tier}</span>
                 </Link>
@@ -185,18 +185,18 @@ export default function DashboardPage() {
             </div>
             <div className="space-y-2">
               {recentCampaigns.length === 0 && (
-                <p className="text-sm text-slate-500 text-center py-4">No active campaigns</p>
+                <p className="text-sm text-stone-500 text-center py-4">No active campaigns</p>
               )}
               {recentCampaigns.map(c => (
                 <div key={c.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-muted transition-colors">
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-white truncate">{c.title}</div>
-                    <div className="text-xs text-slate-400">{c.platform ?? 'Multi-platform'}</div>
+                    <div className="text-xs text-stone-400">{c.platform ?? 'Multi-platform'}</div>
                   </div>
                   <div className="text-right flex-shrink-0">
                     <span className={`badge ${CAMPAIGN_STATUS_COLORS[c.status]}`}>{c.status}</span>
                     {c.budget && (
-                      <div className="text-xs text-slate-400 mt-0.5">
+                      <div className="text-xs text-stone-400 mt-0.5">
                         {formatCurrency(c.spent)} / {formatCurrency(c.budget)}
                       </div>
                     )}

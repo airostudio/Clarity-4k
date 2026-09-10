@@ -44,16 +44,16 @@ export default function AddDealModal({ clientId, onClose, onSuccess }: Props) {
       <div className="bg-surface-card border border-surface-border rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-surface-border">
           <h2 className="text-base font-semibold text-white">Add Deal</h2>
-          <button onClick={onClose}><X className="w-5 h-5 text-slate-400 hover:text-white" /></button>
+          <button onClick={onClose}><X className="w-5 h-5 text-stone-400 hover:text-white" /></button>
         </div>
         <form onSubmit={submit} className="p-5 space-y-4">
           <div>
-            <label className="block text-sm text-slate-400 mb-1.5">Deal Title *</label>
+            <label className="block text-sm text-stone-400 mb-1.5">Deal Title *</label>
             <input className="input" value={form.title} onChange={e => set('title', e.target.value)} required />
           </div>
 
           <div>
-            <label className="block text-sm text-slate-400 mb-1.5">Talent</label>
+            <label className="block text-sm text-stone-400 mb-1.5">Talent</label>
             <select className="input" value={form.talentId} onChange={e => set('talentId', e.target.value)}>
               <option value="">Not talent-specific</option>
               {talents.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -62,30 +62,30 @@ export default function AddDealModal({ clientId, onClose, onSuccess }: Props) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Status</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Status</label>
               <select className="input" value={form.status} onChange={e => set('status', e.target.value)}>
                 {['PROSPECT', 'NEGOTIATING', 'ACTIVE', 'COMPLETED', 'CANCELLED'].map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Value (USD)</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Value (USD)</label>
               <input className="input" type="number" min="0" value={form.value} onChange={e => set('value', e.target.value)} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">Start Date</label>
+              <label className="block text-sm text-stone-400 mb-1.5">Start Date</label>
               <input className="input" type="date" value={form.startDate} onChange={e => set('startDate', e.target.value)} />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1.5">End Date</label>
+              <label className="block text-sm text-stone-400 mb-1.5">End Date</label>
               <input className="input" type="date" value={form.endDate} onChange={e => set('endDate', e.target.value)} />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm text-slate-400 mb-1.5">Description</label>
+            <label className="block text-sm text-stone-400 mb-1.5">Description</label>
             <textarea className="input resize-none" rows={2} value={form.description} onChange={e => set('description', e.target.value)} />
           </div>
 

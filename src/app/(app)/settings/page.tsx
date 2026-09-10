@@ -24,7 +24,7 @@ export default function SettingsPage() {
           ] as { key: Tab; label: string; icon: any }[]).map(({ key, label, icon: Icon }) => (
             <button key={key} onClick={() => setTab(key)}
               className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
-                tab === key ? 'text-white border-brand-500' : 'text-slate-400 border-transparent hover:text-slate-200'
+                tab === key ? 'text-white border-brand-500' : 'text-stone-400 border-transparent hover:text-stone-200'
               }`}>
               <Icon className="w-4 h-4" /> {label}
             </button>
@@ -81,11 +81,11 @@ function AgencySettings() {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-slate-400 mb-1.5">Agency Name</label>
+          <label className="block text-sm text-stone-400 mb-1.5">Agency Name</label>
           <input className="input" value={form.agencyName ?? ''} onChange={e => set('agencyName', e.target.value)} />
         </div>
         <div>
-          <label className="block text-sm text-slate-400 mb-1.5">Default Currency</label>
+          <label className="block text-sm text-stone-400 mb-1.5">Default Currency</label>
           <select className="input" value={form.currency ?? 'USD'} onChange={e => set('currency', e.target.value)}>
             {['USD', 'EUR', 'GBP', 'CAD', 'AUD'].map(c => <option key={c}>{c}</option>)}
           </select>
@@ -94,29 +94,29 @@ function AgencySettings() {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-slate-400 mb-1.5">Default Agency Fee (%)</label>
+          <label className="block text-sm text-stone-400 mb-1.5">Default Agency Fee (%)</label>
           <input className="input" type="number" min="0" max="100" value={form.defaultFee ?? 20}
             onChange={e => set('defaultFee', +e.target.value)} />
         </div>
         <div>
-          <label className="block text-sm text-slate-400 mb-1.5">Tax ID / VAT Number</label>
+          <label className="block text-sm text-stone-400 mb-1.5">Tax ID / VAT Number</label>
           <input className="input" value={form.taxId ?? ''} onChange={e => set('taxId', e.target.value)} />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-slate-400 mb-1.5">Contact Email</label>
+          <label className="block text-sm text-stone-400 mb-1.5">Contact Email</label>
           <input className="input" type="email" value={form.contactEmail ?? ''} onChange={e => set('contactEmail', e.target.value)} />
         </div>
         <div>
-          <label className="block text-sm text-slate-400 mb-1.5">Contact Phone</label>
+          <label className="block text-sm text-stone-400 mb-1.5">Contact Phone</label>
           <input className="input" value={form.contactPhone ?? ''} onChange={e => set('contactPhone', e.target.value)} />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm text-slate-400 mb-1.5">Address</label>
+        <label className="block text-sm text-stone-400 mb-1.5">Address</label>
         <textarea className="input resize-none" rows={2} value={form.address ?? ''}
           onChange={e => set('address', e.target.value)} />
       </div>
@@ -139,7 +139,7 @@ function AgencySettings() {
 const ROLE_COLORS: Record<string, string> = {
   ADMIN:   'text-yellow-400 bg-yellow-400/10 border-yellow-400/30',
   MANAGER: 'text-blue-400 bg-blue-400/10 border-blue-400/30',
-  VIEWER:  'text-slate-400 bg-slate-400/10 border-slate-400/30',
+  VIEWER:  'text-stone-400 bg-stone-400/10 border-stone-400/30',
 }
 
 function TeamManagement() {
@@ -218,7 +218,7 @@ function TeamManagement() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-white text-sm truncate">{s.name || s.email}</div>
-                  <div className="text-xs text-slate-400 truncate">{s.email}</div>
+                  <div className="text-xs text-stone-400 truncate">{s.email}</div>
                 </div>
                 <select
                   className="input w-auto text-xs py-1"
@@ -229,18 +229,18 @@ function TeamManagement() {
                 </select>
                 <button
                   onClick={() => toggleStatus(s.id, s.status)}
-                  className={`badge cursor-pointer ${s.status === 'ACTIVE' ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30' : 'text-slate-500 bg-slate-500/10 border-slate-500/30'}`}
+                  className={`badge cursor-pointer ${s.status === 'ACTIVE' ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30' : 'text-stone-500 bg-stone-500/10 border-stone-500/30'}`}
                   title="Click to toggle"
                 >
                   {s.status}
                 </button>
-                <button onClick={() => removeStaff(s.id)} className="text-slate-500 hover:text-red-400 transition-colors p-1">
+                <button onClick={() => removeStaff(s.id)} className="text-stone-500 hover:text-red-400 transition-colors p-1">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))}
             {staff.length === 0 && (
-              <p className="text-sm text-slate-500 text-center py-6">No team members added yet.</p>
+              <p className="text-sm text-stone-500 text-center py-6">No team members added yet.</p>
             )}
           </div>
         )}
@@ -248,9 +248,9 @@ function TeamManagement() {
 
       <div className="card bg-surface flex gap-3 items-start">
         <Info className="w-4 h-4 text-brand-400 flex-shrink-0 mt-0.5" />
-        <p className="text-xs text-slate-400 leading-relaxed">
-          <strong className="text-slate-300">VIEWER</strong> can only view data. <strong className="text-slate-300">MANAGER</strong> can
-          create and edit talent, campaigns, earnings, expenses, and clients. <strong className="text-slate-300">ADMIN</strong> can also
+        <p className="text-xs text-stone-400 leading-relaxed">
+          <strong className="text-stone-300">VIEWER</strong> can only view data. <strong className="text-stone-300">MANAGER</strong> can
+          create and edit talent, campaigns, earnings, expenses, and clients. <strong className="text-stone-300">ADMIN</strong> can also
           delete records, manage the team, and edit agency settings. A team member signs in with the email
           below via Google, GitHub, or a magic link — it doesn't need to match their login provider, just the
           email address itself.
@@ -262,19 +262,19 @@ function TeamManagement() {
           <div className="bg-surface-card border border-surface-border rounded-2xl w-full max-w-md">
             <div className="flex items-center justify-between p-5 border-b border-surface-border">
               <h2 className="text-base font-semibold text-white">Add Team Member</h2>
-              <button onClick={() => setShowAdd(false)}><X className="w-5 h-5 text-slate-400 hover:text-white" /></button>
+              <button onClick={() => setShowAdd(false)}><X className="w-5 h-5 text-stone-400 hover:text-white" /></button>
             </div>
             <form onSubmit={addStaff} className="p-5 space-y-4">
               <div>
-                <label className="block text-sm text-slate-400 mb-1.5">Email *</label>
+                <label className="block text-sm text-stone-400 mb-1.5">Email *</label>
                 <input className="input" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
               </div>
               <div>
-                <label className="block text-sm text-slate-400 mb-1.5">Name</label>
+                <label className="block text-sm text-stone-400 mb-1.5">Name</label>
                 <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-sm text-slate-400 mb-1.5">Role</label>
+                <label className="block text-sm text-stone-400 mb-1.5">Role</label>
                 <select className="input" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}>
                   {['ADMIN', 'MANAGER', 'VIEWER'].map(r => <option key={r}>{r}</option>)}
                 </select>

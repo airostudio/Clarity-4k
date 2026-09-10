@@ -5,9 +5,10 @@ import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import {
   LayoutDashboard, Users, Megaphone, DollarSign,
-  Settings, Zap, LogOut, ChevronRight, Handshake,
+  Settings, LogOut, ChevronRight, Handshake,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import Logo from '@/components/layout/Logo'
 
 const nav = [
   { href: '/dashboard',   label: 'Dashboard',   icon: LayoutDashboard },
@@ -26,12 +27,10 @@ export default function Sidebar() {
       {/* Brand */}
       <div className="p-5 border-b border-surface-border">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center flex-shrink-0">
-            <Zap className="w-5 h-5 text-white" />
-          </div>
+          <Logo size="sm" />
           <div>
-            <div className="font-bold text-white text-sm leading-tight">Clarity 4K</div>
-            <div className="text-xs text-slate-500 leading-tight">Talent Platform</div>
+            <div className="font-display font-semibold text-stone-50 text-sm leading-tight tracking-wide">Clarity 4K</div>
+            <div className="text-[10px] text-brand-500/80 leading-tight uppercase tracking-widest mt-0.5">Talent Agency</div>
           </div>
         </div>
       </div>

@@ -23,28 +23,28 @@ export default function CampaignDetailModal({ campaign: c, onClose, onRefresh }:
           <div>
             <h2 className="text-lg font-semibold text-white">{c.title}</h2>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-slate-400">{c.type.replace('_', ' ')}</span>
+              <span className="text-xs text-stone-400">{c.type.replace('_', ' ')}</span>
               <span className={`badge ${CAMPAIGN_STATUS_COLORS[c.status]}`}>{c.status}</span>
-              {c.platform && <span className="text-xs text-slate-400">· {c.platform}</span>}
+              {c.platform && <span className="text-xs text-stone-400">· {c.platform}</span>}
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={handleDelete} className="btn-danger text-xs flex items-center gap-1.5">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
-            <button onClick={onClose}><X className="w-5 h-5 text-slate-400 hover:text-white" /></button>
+            <button onClick={onClose}><X className="w-5 h-5 text-stone-400 hover:text-white" /></button>
           </div>
         </div>
 
         <div className="p-6 space-y-5">
           {c.description && (
-            <p className="text-sm text-slate-300 leading-relaxed">{c.description}</p>
+            <p className="text-sm text-stone-300 leading-relaxed">{c.description}</p>
           )}
 
           {/* Dates & Goal */}
           <div className="grid grid-cols-2 gap-4">
             <div className="card bg-surface">
-              <div className="text-xs text-slate-400 mb-1">Timeline</div>
+              <div className="text-xs text-stone-400 mb-1">Timeline</div>
               <div className="text-sm text-white font-medium">
                 {formatDate(c.startDate)}
                 {c.endDate && <> → {formatDate(c.endDate)}</>}
@@ -53,7 +53,7 @@ export default function CampaignDetailModal({ campaign: c, onClose, onRefresh }:
             </div>
             {c.goal && (
               <div className="card bg-surface">
-                <div className="text-xs text-slate-400 mb-1">Goal</div>
+                <div className="text-xs text-stone-400 mb-1">Goal</div>
                 <div className="text-sm text-white font-medium">{c.goal}</div>
               </div>
             )}
@@ -63,7 +63,7 @@ export default function CampaignDetailModal({ campaign: c, onClose, onRefresh }:
           {c.budget && (
             <div className="card bg-surface">
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-slate-400">Budget utilisation</span>
+                <span className="text-stone-400">Budget utilisation</span>
                 <span className="font-semibold text-white">
                   {formatCurrency(c.spent)} / {formatCurrency(c.budget)} ({budgetPct.toFixed(0)}%)
                 </span>
@@ -90,7 +90,7 @@ export default function CampaignDetailModal({ campaign: c, onClose, onRefresh }:
                 ].map(m => (
                   <div key={m.label} className="card bg-surface text-center">
                     <div className="text-lg font-bold text-white">{m.value}</div>
-                    <div className="text-xs text-slate-400">{m.label}</div>
+                    <div className="text-xs text-stone-400">{m.label}</div>
                   </div>
                 ))}
               </div>
@@ -108,7 +108,7 @@ export default function CampaignDetailModal({ campaign: c, onClose, onRefresh }:
                     <div className="w-7 h-7 rounded-full bg-brand-600/20 flex items-center justify-center text-xs font-bold text-brand-400">
                       {talent.name.charAt(0)}
                     </div>
-                    <span className="text-sm text-slate-200">{talent.name}</span>
+                    <span className="text-sm text-stone-200">{talent.name}</span>
                   </div>
                 ))}
               </div>

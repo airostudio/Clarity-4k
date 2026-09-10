@@ -3,7 +3,8 @@
 import { Suspense, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Zap, ShieldAlert, Mail, MailCheck, KeyRound } from 'lucide-react'
+import { ShieldAlert, Mail, MailCheck, KeyRound } from 'lucide-react'
+import Logo from '@/components/layout/Logo'
 
 function GoogleIcon() {
   return (
@@ -87,21 +88,21 @@ function LoginForm() {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(59,91,253,0.15) 0%, transparent 60%), #0f1117' }}
+      style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(200,145,42,0.08) 0%, transparent 60%), #0a0a0a' }}
     >
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-600 mb-4">
-            <Zap className="w-7 h-7 text-white" />
+          <div className="inline-flex mb-4">
+            <Logo size="md" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Clarity 4K</h1>
-          <p className="text-slate-400 mt-1 text-sm">Talent Management Platform</p>
+          <h1 className="font-display text-3xl font-semibold text-stone-50 tracking-tight">Clarity 4K</h1>
+          <p className="text-brand-500/90 mt-1.5 text-xs uppercase tracking-[0.2em]">Talent Agency</p>
         </div>
 
         <div className="card">
-          <h2 className="text-base font-semibold text-white mb-1">Sign in to your account</h2>
-          <p className="text-xs text-slate-400 mb-6">Use your Google or GitHub account, or a login link by email.</p>
+          <h2 className="font-display text-lg font-semibold text-stone-50 mb-1">Sign in to your account</h2>
+          <p className="text-xs text-stone-500 mb-6">Use your Google or GitHub account, or a login link by email.</p>
 
           {errorMessage && (
             <div className="flex items-start gap-2 text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2.5 mb-4">
@@ -130,7 +131,7 @@ function LoginForm() {
 
           <div className="flex items-center gap-3 my-5">
             <div className="h-px bg-surface-border flex-1" />
-            <span className="text-[11px] text-slate-500 uppercase tracking-wide">or</span>
+            <span className="text-[11px] text-stone-500 uppercase tracking-wide">or</span>
             <div className="h-px bg-surface-border flex-1" />
           </div>
 
@@ -196,14 +197,14 @@ function LoginForm() {
             ) : (
               <button
                 onClick={() => setShowAdminLogin(true)}
-                className="text-[11px] text-slate-500 hover:text-slate-300 transition-colors mx-auto block"
+                className="text-[11px] text-stone-500 hover:text-stone-300 transition-colors mx-auto block"
               >
                 Admin testing login
               </button>
             )}
           </div>
 
-          <p className="text-[11px] text-slate-500 text-center mt-5 leading-relaxed">
+          <p className="text-[11px] text-stone-500 text-center mt-5 leading-relaxed">
             Access is restricted to authorised team members.<br />
             Contact your admin if you need access.
           </p>

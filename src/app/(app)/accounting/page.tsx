@@ -82,7 +82,7 @@ export default function AccountingPage() {
               {(['overview', 'talent', 'transactions'] as Tab[]).map(t => (
                 <button key={t} onClick={() => setTab(t)}
                   className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
-                    tab === t ? 'text-white border-brand-500' : 'text-slate-400 border-transparent hover:text-slate-200'
+                    tab === t ? 'text-white border-brand-500' : 'text-stone-400 border-transparent hover:text-stone-200'
                   }`}>
                   {t}
                 </button>
@@ -133,14 +133,14 @@ export default function AccountingPage() {
                         <tr key={t.id} className="table-row">
                           <td className="table-cell">
                             <div className="font-medium text-white">{t.name}</div>
-                            {t.stageName && <div className="text-xs text-slate-400">{t.stageName}</div>}
+                            {t.stageName && <div className="text-xs text-stone-400">{t.stageName}</div>}
                           </td>
                           <td className="table-cell">
                             <span className={`badge ${TIER_COLORS[t.tier]}`}>{t.tier}</span>
                           </td>
                           <td className="table-cell font-semibold text-emerald-400">{formatCurrency(t.grossEarnings)}</td>
                           <td className="table-cell text-red-400">{formatCurrency(t.expenses)}</td>
-                          <td className="table-cell text-slate-400">{t.agencyFee}%</td>
+                          <td className="table-cell text-stone-400">{t.agencyFee}%</td>
                           <td className="table-cell font-semibold text-blue-400">{formatCurrency(t.agencyRevenue)}</td>
                           <td className={`table-cell font-semibold ${talentNet >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                             {formatCurrency(talentNet)}
@@ -154,7 +154,7 @@ export default function AccountingPage() {
                       <td colSpan={2} className="table-cell font-bold text-white">Totals</td>
                       <td className="table-cell font-bold text-emerald-400">{formatCurrency(data.summary.totalRevenue)}</td>
                       <td className="table-cell font-bold text-red-400">{formatCurrency(data.summary.totalExpenses)}</td>
-                      <td className="table-cell text-slate-400">—</td>
+                      <td className="table-cell text-stone-400">—</td>
                       <td className="table-cell font-bold text-blue-400">{formatCurrency(data.summary.agencyRevenue)}</td>
                       <td className="table-cell font-bold text-purple-400">{formatCurrency(data.summary.netRevenue)}</td>
                     </tr>
@@ -182,16 +182,16 @@ export default function AccountingPage() {
                       <tbody>
                         {data.recentEarnings.map((e: any) => (
                           <tr key={e.id} className="table-row">
-                            <td className="table-cell text-sm text-slate-300">{e.talent.name}</td>
+                            <td className="table-cell text-sm text-stone-300">{e.talent.name}</td>
                             <td className="table-cell">
                               <span className="badge text-blue-400 bg-blue-400/10 border-blue-400/20 text-xs">{e.platform}</span>
                             </td>
-                            <td className="table-cell text-xs text-slate-400">{e.month}/{e.year}</td>
+                            <td className="table-cell text-xs text-stone-400">{e.month}/{e.year}</td>
                             <td className="table-cell font-semibold text-emerald-400 text-sm">{formatCurrency(e.amount)}</td>
                           </tr>
                         ))}
                         {data.recentEarnings.length === 0 && (
-                          <tr><td colSpan={4} className="table-cell text-center text-slate-500 py-6">No earnings this period</td></tr>
+                          <tr><td colSpan={4} className="table-cell text-center text-stone-500 py-6">No earnings this period</td></tr>
                         )}
                       </tbody>
                     </table>
@@ -214,16 +214,16 @@ export default function AccountingPage() {
                       <tbody>
                         {data.recentExpenses.map((e: any) => (
                           <tr key={e.id} className="table-row">
-                            <td className="table-cell text-sm text-slate-300">{e.talent.name}</td>
+                            <td className="table-cell text-sm text-stone-300">{e.talent.name}</td>
                             <td className="table-cell">
                               <span className="badge text-amber-400 bg-amber-400/10 border-amber-400/20 text-xs">{e.category}</span>
                             </td>
-                            <td className="table-cell text-xs text-slate-400">{formatDate(e.date)}</td>
+                            <td className="table-cell text-xs text-stone-400">{formatDate(e.date)}</td>
                             <td className="table-cell font-semibold text-red-400 text-sm">{formatCurrency(e.amount)}</td>
                           </tr>
                         ))}
                         {data.recentExpenses.length === 0 && (
-                          <tr><td colSpan={4} className="table-cell text-center text-slate-500 py-6">No expenses this period</td></tr>
+                          <tr><td colSpan={4} className="table-cell text-center text-stone-500 py-6">No expenses this period</td></tr>
                         )}
                       </tbody>
                     </table>

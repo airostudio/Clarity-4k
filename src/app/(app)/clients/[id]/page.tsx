@@ -53,7 +53,7 @@ export default function ClientDetailPage() {
       <Topbar title={client.name} subtitle={client.industry ?? undefined} />
 
       <div className="p-6 space-y-5 max-w-[1100px]">
-        <Link href="/clients" className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors w-fit">
+        <Link href="/clients" className="flex items-center gap-1.5 text-sm text-stone-400 hover:text-white transition-colors w-fit">
           <ArrowLeft className="w-4 h-4" /> Back to Clients
         </Link>
 
@@ -68,20 +68,20 @@ export default function ClientDetailPage() {
                   <h2 className="text-xl font-bold text-white">{client.name}</h2>
                   <span className={`badge ${CLIENT_STATUS_COLORS[client.status]}`}>{client.status}</span>
                 </div>
-                <div className="text-slate-400 mt-0.5 text-sm">{client.contactName || 'No contact set'}</div>
+                <div className="text-stone-400 mt-0.5 text-sm">{client.contactName || 'No contact set'}</div>
                 <div className="flex items-center gap-4 mt-2 flex-wrap">
                   {client.contactEmail && (
-                    <a href={`mailto:${client.contactEmail}`} className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white">
+                    <a href={`mailto:${client.contactEmail}`} className="flex items-center gap-1.5 text-xs text-stone-400 hover:text-white">
                       <Mail className="w-3.5 h-3.5" /> {client.contactEmail}
                     </a>
                   )}
                   {client.contactPhone && (
-                    <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span className="flex items-center gap-1.5 text-xs text-stone-400">
                       <Phone className="w-3.5 h-3.5" /> {client.contactPhone}
                     </span>
                   )}
                   {client.website && (
-                    <a href={client.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white">
+                    <a href={client.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-stone-400 hover:text-white">
                       <Globe className="w-3.5 h-3.5" /> {client.website}
                     </a>
                   )}
@@ -94,7 +94,7 @@ export default function ClientDetailPage() {
           </div>
 
           {client.notes && (
-            <p className="text-sm text-slate-300 mt-4 leading-relaxed border-t border-surface-border pt-4">{client.notes}</p>
+            <p className="text-sm text-stone-300 mt-4 leading-relaxed border-t border-surface-border pt-4">{client.notes}</p>
           )}
         </div>
 
@@ -106,7 +106,7 @@ export default function ClientDetailPage() {
           ].map(s => (
             <div key={s.label} className="card text-center">
               <div className={`text-xl font-bold ${s.color}`}>{s.value}</div>
-              <div className="text-xs text-slate-400 mt-1">{s.label}</div>
+              <div className="text-xs text-stone-400 mt-1">{s.label}</div>
             </div>
           ))}
         </div>
@@ -126,7 +126,7 @@ export default function ClientDetailPage() {
               <div key={d.id} className="flex items-center gap-3 p-3 bg-surface rounded-lg">
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-white text-sm">{d.title}</div>
-                  <div className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                  <div className="text-xs text-stone-400 flex items-center gap-2 mt-0.5">
                     {d.talent && <span>{d.talent.name}</span>}
                     {d.startDate && <span>{formatDate(d.startDate)}{d.endDate ? ` → ${formatDate(d.endDate)}` : ''}</span>}
                   </div>
@@ -138,7 +138,7 @@ export default function ClientDetailPage() {
               </div>
             ))}
             {deals.length === 0 && (
-              <p className="text-center text-slate-500 py-8">No deals recorded yet</p>
+              <p className="text-center text-stone-500 py-8">No deals recorded yet</p>
             )}
           </div>
         </div>
