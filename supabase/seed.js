@@ -1,5 +1,9 @@
 // Seeds demo data into Supabase. Requires NEXT_PUBLIC_SUPABASE_URL and
 // SUPABASE_SERVICE_ROLE_KEY to be set (service role bypasses RLS for inserts).
+// Safe to re-run: talents are deduped by email, campaigns by title, and
+// earnings/expenses/notes are only generated for talents newly created in
+// this run — so running this again after adding more demo talents won't
+// duplicate anything for the ones that already existed.
 const { createClient } = require('@supabase/supabase-js')
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -77,19 +81,58 @@ async function main() {
       platform_links: JSON.stringify({ instagram: 'https://instagram.com/fionaw' }),
       social_links: JSON.stringify({ tiktok: '@fionaw_comedy' }),
     },
+    {
+      name: 'Sophia Reyes', stage_name: 'SophR', email: 'sophia@clarity4k.com',
+      phone: '+1 (555) 100-0007', nationality: 'American',
+      bio: 'Sun-kissed, girl-next-door charm with a warm, approachable style that resonates with a broad fan base. Beach and poolside lifestyle content.',
+      avatar: 'https://api.dicebear.com/9.x/personas/svg?seed=sophia',
+      status: 'ACTIVE', tier: 'ELITE', agency_fee: 20, tags: 'girl-next-door,beach,lifestyle',
+      platform_links: JSON.stringify({ onlyfans: 'https://onlyfans.com/sophr', instagram: 'https://instagram.com/sophiareyes' }),
+      social_links: JSON.stringify({ twitter: '@sophr', tiktok: '@sophr_official' }),
+    },
+    {
+      name: 'Mia Torres', stage_name: 'MiaT', email: 'mia@clarity4k.com',
+      phone: '+1 (555) 100-0008', nationality: 'American',
+      bio: 'Californian outdoors enthusiast with a natural, tanned, girl-next-door aesthetic. Known for laid-back, authentic day-in-the-life content.',
+      avatar: 'https://api.dicebear.com/9.x/personas/svg?seed=mia',
+      status: 'ACTIVE', tier: 'PREMIUM', agency_fee: 20, tags: 'girl-next-door,outdoors,lifestyle',
+      platform_links: JSON.stringify({ onlyfans: 'https://onlyfans.com/miat', instagram: 'https://instagram.com/miatorres' }),
+      social_links: JSON.stringify({ tiktok: '@miat_official' }),
+    },
+    {
+      name: 'Isabella Cruz', stage_name: 'BellaC', email: 'isabella@clarity4k.com',
+      phone: '+1 (555) 100-0009', nationality: 'Brazilian',
+      bio: 'Warm, sun-bronzed glow paired with an easygoing, approachable presence. Fast-growing fitness and swimwear content creator.',
+      avatar: 'https://api.dicebear.com/9.x/personas/svg?seed=isabella',
+      status: 'ACTIVE', tier: 'PREMIUM', agency_fee: 18, tags: 'girl-next-door,fitness,swimwear',
+      platform_links: JSON.stringify({ onlyfans: 'https://onlyfans.com/bellac', instagram: 'https://instagram.com/isabellacruz' }),
+      social_links: JSON.stringify({ twitter: '@bellac', tiktok: '@bellac_fit' }),
+    },
+    {
+      name: 'Kayla Bennett', stage_name: 'KaylaB', email: 'kayla@clarity4k.com',
+      phone: '+1 (555) 100-0010', nationality: 'American',
+      bio: 'Down-to-earth, tanned girl-next-door with a following built on genuine, relatable outdoor and travel content.',
+      avatar: 'https://api.dicebear.com/9.x/personas/svg?seed=kayla',
+      status: 'PENDING', tier: 'STANDARD', agency_fee: 20, tags: 'girl-next-door,travel,outdoors',
+      platform_links: JSON.stringify({ instagram: 'https://instagram.com/kaylabennett' }),
+      social_links: JSON.stringify({ tiktok: '@kaylab_travels' }),
+    },
   ]
 
   const createdTalents = []
+  const newlyCreatedIds = new Set()
   for (const t of talents) {
     const { data: existing } = await supabase.from('talent').select('id').eq('email', t.email).maybeSingle()
     if (existing) { createdTalents.push(existing); continue }
     const { data, error } = await supabase.from('talent').insert(t).select().single()
     if (error) throw error
     createdTalents.push(data)
+    newlyCreatedIds.add(data.id)
   }
 
   const now = new Date()
-  for (const talent of createdTalents.slice(0, 5)) {
+  const newActiveTalents = createdTalents.filter((t, i) => newlyCreatedIds.has(t.id) && talents[i].status === 'ACTIVE')
+  for (const talent of newActiveTalents) {
     for (let i = 0; i < 6; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
       const base = talent.tier === 'ELITE' ? 8000 : talent.tier === 'PREMIUM' ? 4000 : 1500
@@ -112,7 +155,7 @@ async function main() {
   }
 
   const categories = ['Shoot', 'Travel', 'Equipment', 'Marketing', 'Other']
-  for (const talent of createdTalents.slice(0, 4)) {
+  for (const talent of newActiveTalents) {
     for (let i = 0; i < 4; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 15)
       await supabase.from('expenses').insert({
@@ -159,13 +202,23 @@ async function main() {
       start_date: '2025-01-10', budget: 2500, spent: 0,
       goal: 'Reach 500 subscribers in first 30 days', platform: 'OnlyFans', metrics: null,
     },
+    {
+      title: 'Girl-Next-Door Collective Launch', type: 'LAUNCH', status: 'DRAFT',
+      description: 'Joint launch campaign introducing Sophia, Mia, Isabella and Kayla with a shared sun-soaked content series.',
+      start_date: '2025-02-01', budget: 4000, spent: 0,
+      goal: 'Reach 1,000 combined new subscribers in first 30 days', platform: 'OnlyFans', metrics: null,
+    },
   ]
 
   const createdCampaigns = []
+  const newlyCreatedCampaignIds = new Set()
   for (const c of campaigns) {
+    const { data: existing } = await supabase.from('campaigns').select('*').eq('title', c.title).maybeSingle()
+    if (existing) { createdCampaigns.push(existing); continue }
     const { data, error } = await supabase.from('campaigns').insert(c).select().single()
     if (error) throw error
     createdCampaigns.push(data)
+    newlyCreatedCampaignIds.add(data.id)
   }
 
   const links = [
@@ -174,18 +227,34 @@ async function main() {
     [2, 1], [2, 2], [2, 3],
     [3, 0], [3, 4],
     [4, 5],
+    [5, 6], [5, 7], [5, 8], [5, 9],
   ]
-  await supabase.from('campaign_talent').insert(
-    links.map(([ci, ti]) => ({ campaign_id: createdCampaigns[ci].id, talent_id: createdTalents[ti].id }))
-  )
+  for (const [ci, ti] of links) {
+    const campaignId = createdCampaigns[ci].id
+    const talentId = createdTalents[ti].id
+    const { data: existingLink } = await supabase
+      .from('campaign_talent').select('id')
+      .eq('campaign_id', campaignId).eq('talent_id', talentId).maybeSingle()
+    if (!existingLink) {
+      await supabase.from('campaign_talent').insert({ campaign_id: campaignId, talent_id: talentId })
+    }
+  }
 
-  await supabase.from('notes').insert([
-    { talent_id: createdTalents[0].id, content: 'Alexa is ready for the next shoot — schedule confirmed for Dec 3rd.', author: 'Sarah Mitchell' },
-    { talent_id: createdTalents[0].id, content: 'Brand deal with NutriCo finalised — $3,200 deliverable due Dec 10.', author: 'Admin User' },
-    { talent_id: createdTalents[1].id, content: 'Discussed raising tier to ELITE — review after Q4 numbers.', author: 'Sarah Mitchell' },
-    { talent_id: createdTalents[4].id, content: 'Elena is performing exceptionally — viral TikTok drove 12k new follows this week.', author: 'Sarah Mitchell' },
-    { talent_id: createdTalents[5].id, content: 'Fiona onboarding in progress — paperwork sent, awaiting signed contract.', author: 'Admin User' },
-  ])
+  const notes = [
+    { i: 0, content: 'Alexa is ready for the next shoot — schedule confirmed for Dec 3rd.', author: 'Sarah Mitchell' },
+    { i: 0, content: 'Brand deal with NutriCo finalised — $3,200 deliverable due Dec 10.', author: 'Admin User' },
+    { i: 1, content: 'Discussed raising tier to ELITE — review after Q4 numbers.', author: 'Sarah Mitchell' },
+    { i: 4, content: 'Elena is performing exceptionally — viral TikTok drove 12k new follows this week.', author: 'Sarah Mitchell' },
+    { i: 5, content: 'Fiona onboarding in progress — paperwork sent, awaiting signed contract.', author: 'Admin User' },
+    { i: 6, content: 'Sophia hit ELITE tier this quarter — renegotiating her agency fee split.', author: 'Sarah Mitchell' },
+    { i: 7, content: "Mia's beach shoot footage is in — scheduling release across all platforms next week.", author: 'Admin User' },
+    { i: 8, content: "Isabella's swimwear collab is picking up strong early engagement.", author: 'Sarah Mitchell' },
+    { i: 9, content: 'Kayla onboarding in progress — awaiting signed contract before going ACTIVE.', author: 'Admin User' },
+  ]
+  for (const n of notes) {
+    if (!newlyCreatedIds.has(createdTalents[n.i].id)) continue // talent already existed, likely already has this note
+    await supabase.from('notes').insert({ talent_id: createdTalents[n.i].id, content: n.content, author: n.author })
+  }
 
   console.log('✅ Supabase seed complete')
 }
