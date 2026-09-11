@@ -29,6 +29,7 @@ export async function PUT(req: NextRequest) {
   if (body.contactPhone !== undefined) row.contact_phone = body.contactPhone
   if (body.address      !== undefined) row.address       = body.address
   if (body.taxId        !== undefined) row.tax_id        = body.taxId
+  if (body.colorScheme  !== undefined) row.color_scheme  = body.colorScheme
 
   const { data, error } = await supabase
     .from('agency_settings')

@@ -90,7 +90,7 @@ function LoginFormInner({ agencyName }: Props) {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(200,145,42,0.08) 0%, transparent 60%), #0a0a0a' }}
+      style={{ background: 'radial-gradient(ellipse at 50% 0%, rgb(var(--brand-500) / 8%) 0%, transparent 60%), #0a0a0a' }}
     >
       <div className="w-full max-w-sm">
         {/* Logo */}

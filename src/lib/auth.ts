@@ -9,6 +9,7 @@ import nodemailer from 'nodemailer'
 import { createHash, timingSafeEqual } from 'crypto'
 import { resolveAccess, normalizeEmail } from '@/lib/rbac'
 import { getAgencyBranding } from '@/lib/agency'
+import { getColorScheme } from '@/lib/colorSchemes'
 
 // Fixed-length digest comparison so a mismatched-length input can't short-circuit
 // timingSafeEqual (which throws on unequal-length buffers) or leak length via timing.
@@ -80,7 +81,9 @@ export const authOptions: NextAuthOptions = {
         const { allowed } = await resolveAccess(identifier)
         if (!allowed) return
 
-        const { agencyName } = await getAgencyBranding()
+        const { agencyName, colorScheme } = await getAgencyBranding()
+        const scheme = getColorScheme(colorScheme)
+        const buttonTextColor = scheme.contrastText === 'black' ? '#000' : '#fff'
         const transport = nodemailer.createTransport(process.env.EMAIL_SERVER)
         await transport.sendMail({
           to: identifier,
@@ -91,7 +94,7 @@ export const authOptions: NextAuthOptions = {
             <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
               <h2 style="color: #1f2937;">Sign in to ${agencyName}</h2>
               <p style="color: #4b5563;">Click the button below to sign in. This link expires in 24 hours.</p>
-              <a href="${url}" style="display: inline-block; background: #c8912a; color: #000; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 16px 0;">
+              <a href="${url}" style="display: inline-block; background: ${scheme.scale['500']}; color: ${buttonTextColor}; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 16px 0;">
                 Sign in to ${agencyName}
               </a>
               <p style="color: #9ca3af; font-size: 13px;">If you didn't request this, you can safely ignore this email.</p>

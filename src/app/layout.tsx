@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Providers } from './providers'
 import { getAgencyBranding } from '@/lib/agency'
+import { getColorScheme, buildThemeCss } from '@/lib/colorSchemes'
 
 // Every page here is either auth-gated or reads live Supabase data, so there's
 // no benefit to static prerendering — and next-auth's SessionProvider throws
@@ -16,9 +17,19 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { colorScheme } = await getAgencyBranding()
+  const themeCss = buildThemeCss(getColorScheme(colorScheme))
+
   return (
     <html lang="en">
+      <head>
+        {/* Sets the CSS custom properties every brand-* Tailwind class reads
+            from (see tailwind.config.js) — this is what makes the agency's
+            chosen color scheme apply everywhere without a client-side flash
+            of the wrong colors. */}
+        <style dangerouslySetInnerHTML={{ __html: themeCss }} />
+      </head>
       <body>
         <Providers>{children}</Providers>
       </body>

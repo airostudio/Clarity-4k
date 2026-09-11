@@ -95,8 +95,12 @@ create table if not exists agency_settings (
   contact_email text,
   contact_phone text,
   address       text,
-  tax_id        text
+  tax_id        text,
+  color_scheme  text not null default 'champagne-gold' -- see src/lib/colorSchemes.ts for the 5 valid values
 );
+
+-- Safe to re-run against an existing database that predates this column.
+alter table agency_settings add column if not exists color_scheme text not null default 'champagne-gold';
 
 insert into agency_settings (id) values ('default') on conflict (id) do nothing;
 

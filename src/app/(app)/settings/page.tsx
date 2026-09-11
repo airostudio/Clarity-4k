@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Topbar from '@/components/layout/Topbar'
 import {
-  Building2, Shield, Save, CheckCircle, Info,
+  Building2, Shield, Save, CheckCircle, Info, Check,
   Plus, X, Trash2,
 } from 'lucide-react'
+import { COLOR_SCHEMES } from '@/lib/colorSchemes'
 
 type Tab = 'agency' | 'team'
 
@@ -39,6 +41,7 @@ export default function SettingsPage() {
 }
 
 function AgencySettings() {
+  const router = useRouter()
   const [form, setForm]     = useState<any>(null)
   const [saving, setSaving] = useState(false)
   const [saved,  setSaved]  = useState(false)
@@ -47,7 +50,7 @@ function AgencySettings() {
     fetch('/api/settings').then(r => r.json()).then(d => {
       setForm(d ?? {
         agencyName: 'Clarity 4K', currency: 'USD', defaultFee: 20,
-        contactEmail: '', contactPhone: '', address: '', taxId: '',
+        contactEmail: '', contactPhone: '', address: '', taxId: '', colorScheme: 'champagne-gold',
       })
     })
   }, [])
@@ -63,6 +66,10 @@ function AgencySettings() {
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 3000)
+    // The color scheme (and any other branding) is injected server-side in
+    // the root layout, so a client-side state update alone won't show it —
+    // this re-runs that Server Component fetch without a full page reload.
+    router.refresh()
   }
 
   if (!form) return (
@@ -119,6 +126,38 @@ function AgencySettings() {
         <label className="block text-sm text-stone-400 mb-1.5">Address</label>
         <textarea className="input resize-none" rows={2} value={form.address ?? ''}
           onChange={e => set('address', e.target.value)} />
+      </div>
+
+      <div className="pt-1 border-t border-surface-border">
+        <label className="block text-sm text-stone-400 mb-3 mt-4">Color Scheme</label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          {COLOR_SCHEMES.map(scheme => {
+            const selected = (form.colorScheme ?? 'champagne-gold') === scheme.id
+            return (
+              <button
+                key={scheme.id}
+                type="button"
+                onClick={() => set('colorScheme', scheme.id)}
+                className={`relative text-left p-3 rounded-lg border transition-colors ${
+                  selected ? 'border-brand-500 bg-brand-500/10' : 'border-surface-border bg-surface hover:border-surface-muted'
+                }`}
+              >
+                {selected && (
+                  <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-brand-500 flex items-center justify-center">
+                    <Check className="w-2.5 h-2.5" style={{ color: scheme.contrastText === 'black' ? '#000' : '#fff' }} />
+                  </div>
+                )}
+                <div className="flex gap-1 mb-2">
+                  {(['300', '500', '700'] as const).map(step => (
+                    <div key={step} className="w-6 h-6 rounded-full border border-black/20" style={{ background: scheme.scale[step] }} />
+                  ))}
+                </div>
+                <div className="text-xs font-semibold text-white">{scheme.name}</div>
+                <div className="text-[11px] text-stone-500 mt-0.5 leading-snug">{scheme.description}</div>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <div className="flex items-center gap-3 pt-2">

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { COLOR_SCHEMES } from '@/lib/colorSchemes'
 
 type ValidateResult<T> =
   | { ok: true; data: T }
@@ -137,6 +138,7 @@ export const AgencySettingsSchema = z.object({
   contactPhone: z.string().trim().max(50).optional(),
   address:      z.string().trim().max(1000).optional(),
   taxId:        z.string().trim().max(100).optional(),
+  colorScheme:  z.enum(COLOR_SCHEMES.map(s => s.id) as [string, ...string[]]).optional(),
 })
 
 // ── Staff ───────────────────────────────────────────────────────────────────

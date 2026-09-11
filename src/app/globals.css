@@ -5,6 +5,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap');
 
 @layer base {
+  :root {
+    /* Champagne Gold fallback — overridden per-request by the <style> tag the
+       root layout injects from the agency's saved color scheme. These exist
+       so nothing is unstyled if that injection is ever missing. */
+    --brand-50: 253 248 237; --brand-100: 250 239 211; --brand-200: 243 219 160;
+    --brand-300: 233 192 108; --brand-400: 220 168 63; --brand-500: 200 145 42;
+    --brand-600: 168 116 31; --brand-700: 133 89 27; --brand-800: 99 66 25;
+    --brand-900: 69 48 23; --brand-950: 42 28 13;
+    --brand-contrast: 0 0 0;
+  }
   * { box-sizing: border-box; }
   body {
     @apply bg-surface text-stone-200 font-sans antialiased;
@@ -20,7 +30,8 @@
     @apply bg-surface-card border border-surface-border/70 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.4)];
   }
   .btn-primary {
-    @apply bg-brand-500 hover:bg-brand-400 text-black font-semibold px-4 py-2 rounded-lg transition-colors text-sm tracking-wide;
+    @apply bg-brand-500 hover:bg-brand-400 font-semibold px-4 py-2 rounded-lg transition-colors text-sm tracking-wide;
+    color: rgb(var(--brand-contrast));
   }
   .btn-secondary {
     @apply bg-surface-muted hover:bg-surface-border text-stone-200 font-medium px-4 py-2 rounded-lg transition-colors text-sm border border-surface-border;
